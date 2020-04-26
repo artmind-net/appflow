@@ -13,25 +13,29 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
-         return Host.CreateDefaultBuilder(args)
-                    .ConfigureServices((hostContext, services) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureServices((hostContext, services) =&gt;
+            {
+                services.AddTransient&lt;InitCounterWorker&gt;();
+                services.AddTransient&lt;IfWorker&gt;();
+                services.AddTransient&lt;WhileWorker&gt;();
+                services.AddTransient&lt;FinishWorker&gt;();
+            })
+            .RegisterServiceFlow(flow =&gt;
+            {
+                flow.UseAppTask&lt;InitCounterWorker&gt;()
+                .UseIfBranch(ctx =&gt; ctx.HasCounter(), branchFlow =&gt;
+                {
+                    branchFlow
+                    .UseAppTask&lt;IfWorker&gt;()
+                    .UseAppTask&lt;IfWorker&gt;()
+                    .UseWhileBranch(ctx =&gt; ctx.GetCounter() &lt; 5, branchFlow =&gt;
                     {
-                        services.AddTransient<StartWorker>();
-                        services.AddTransient<WaitWorker>();
-                        services.AddTransient<StuffWorker>();
-                        services.AddTransient<FinishWorker>();
-                    })
-                    .RegisterAppFlow(rootFlow =>
-                    {
-                        rootFlow.UseAppTask<StartWorker>()
-                                .UseAppTask<WaitWorker>()
-                                .UseIfBranch(ctx => ctx.HasStuff(), branchFlow =>
-                                {
-                                    branchFlow.UseAppTask<StuffWorker>()
-                                              .UseAppTask<WaitWorker>();
-                                })
-                                .UseAppTask<FinishWorker>();
+                        branchFlow.UseAppTask&lt;WhileWorker&gt;();
                     });
+                }, false)
+                .UseAppTask&lt;FinishWorker&gt;();
+            });
     }
 }
 ```
