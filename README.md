@@ -1,4 +1,5 @@
-# ![Logo](docs/icons/logo_80x80.png) AppFlow - Orchestration framework for .NET applications
+# ![Logo](docs/icons/logo_80x80.png) AppFlow
+# Orchestration framework for .NET applications
 AppFlow is a flow management library for .NET applications. It is easy to set up, has a fluent orchestration API, and runs on all recent .NET platforms.
 
 ## Find out more
