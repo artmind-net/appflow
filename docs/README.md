@@ -1,3 +1,4 @@
+# AppFlow registration 
 The simplest way to create .NET app flow is using the 'IHostBuilder' extension method 'ArtMind.AppFlow.RegisterAppFlow.
 
 ```csharp
