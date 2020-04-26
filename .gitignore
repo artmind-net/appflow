@@ -3,3 +3,11 @@
 ################################################################################
 
 /.vs
+/src/ArtMind.AppFlow.Abstractions/obj
+/src/ArtMind.AppFlow.Abstractions/bin
+/src/ArtMind.AppFlow/obj
+/src/ArtMind.AppFlow/bin
+/src/.vs/ArtMind.AppFlow/v16
+/samples/ArtMind.AppFlow.UseCase.Service/bin
+/samples/ArtMind.AppFlow.UseCase.Service/obj
+/samples/ArtMind.AppFlow.UseCase.Service/Properties/launchSettings.json

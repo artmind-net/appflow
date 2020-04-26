@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>ArtMind</Company>
+    <Authors>Artiom Negara</Authors>
+    <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
+    <PackageIcon>logo_128x128.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <Copyright>© 2020 ArtMind</Copyright>
+    <Description>Flow orchestration framework for .NET applications</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTags>appflow serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\icons\logo_128x128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

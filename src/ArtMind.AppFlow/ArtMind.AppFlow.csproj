@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Artiom Negara</Authors>
+    <Company>ArtMind</Company>
+    <Description>Flow orchestration framework for .NET applications</Description>
+    <Copyright>© 2020 ArtMind</Copyright>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
+    <PackageIcon>logo_128x128.png</PackageIcon>
+    <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>appflow serviceflow flow manage chaine artmind fluent framework</PackageTags>
+    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArtMind.AppFlow.Abstractions" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.3" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\icons\logo_128x128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
