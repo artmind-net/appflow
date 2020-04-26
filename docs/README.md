@@ -14,28 +14,28 @@ public class Program
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
         Host.CreateDefaultBuilder(args)
-            .ConfigureServices((hostContext, services) =&gt;
+        .ConfigureServices((hostContext, services) =>
+        {
+            services.AddTransient<InitCounterWorker>();
+            services.AddTransient<IfWorker>();
+            services.AddTransient<WhileWorker>();
+            services.AddTransient<FinishWorker>();
+        })
+        .RegisterServiceFlow(flow =>
+        {
+            flow.UseAppTask<InitCounterWorker>()
+            .UseIfBranch(ctx => ctx.HasCounter(), branchFlow =>
             {
-                services.AddTransient&lt;InitCounterWorker&gt;();
-                services.AddTransient&lt;IfWorker&gt;();
-                services.AddTransient&lt;WhileWorker&gt;();
-                services.AddTransient&lt;FinishWorker&gt;();
-            })
-            .RegisterServiceFlow(flow =&gt;
-            {
-                flow.UseAppTask&lt;InitCounterWorker&gt;()
-                .UseIfBranch(ctx =&gt; ctx.HasCounter(), branchFlow =&gt;
+                branchFlow
+                .UseAppTask<IfWorker>()
+                .UseAppTask<IfWorker>()
+                .UseWhileBranch(ctx => ctx.GetCounter() < 5, branchFlow =>
                 {
-                    branchFlow
-                    .UseAppTask&lt;IfWorker&gt;()
-                    .UseAppTask&lt;IfWorker&gt;()
-                    .UseWhileBranch(ctx =&gt; ctx.GetCounter() &lt; 5, branchFlow =&gt;
-                    {
-                        branchFlow.UseAppTask&lt;WhileWorker&gt;();
-                    });
-                }, false)
-                .UseAppTask&lt;FinishWorker&gt;();
-            });
+                    branchFlow.UseAppTask<WhileWorker>();
+                });
+            }, false)
+            .UseAppTask<FinishWorker>();
+        });
     }
 }
 ```
