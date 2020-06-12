@@ -1,7 +1,9 @@
 ﻿using ArtMind.AppFlow.Abstractions;
 using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ArtMind.AppFlow.UseCase.Service.Workers
 {
@@ -26,7 +28,8 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
         public void Execute(IAppContext context)
         {
             _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
-            Thread.Sleep(5000);
+            _logger.LogInformation("App run successfuly, clossing the app.");
+            Task.Delay(1000);
         }
     }
 }

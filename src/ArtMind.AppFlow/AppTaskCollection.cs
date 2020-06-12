@@ -1,8 +1,7 @@
-﻿using ArtMind.AppFlow.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
-//using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ArtMind.AppFlow
 {
@@ -12,33 +11,31 @@ namespace ArtMind.AppFlow
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
         private readonly IServiceScope _serviceScope;
-        //private readonly ILogger<AppTaskCollection> _logger;
+        private readonly CancellationToken? _stoppingToken;
+
+        public bool IsCancellationRequested { get => _stoppingToken.HasValue ? _stoppingToken.Value.IsCancellationRequested : false; }
 
         private bool HasDisposableScope { get; set; }
         public List<AppTaskResolver> ServiceTaskResolvers { get; } = new List<AppTaskResolver>();
 
-        private AppTaskCollection(IServiceScope serviceScope, Action<IAppTaskCollection> configureDelegate, bool useInnerScope)
+        private AppTaskCollection(IServiceScope serviceScope, CancellationToken? stoppingToken, Action<IAppTaskCollection> configureDelegate, bool useInnerScope)
         {
             HasDisposableScope = useInnerScope;
             _serviceScope = useInnerScope ? serviceScope.ServiceProvider.CreateScope() : serviceScope;
-            //_logger = _serviceScope.ServiceProvider.GetRequiredService<ILogger<AppTaskCollection>>();
-
-            // _logger.LogInformation($"{this} - Creating ...");
+            _stoppingToken = stoppingToken;
 
             configureDelegate(this);
-
-            //_logger.LogInformation($"{this} - Created.");
         }
 
-        public AppTaskCollection(IServiceProvider serviceProvider, Action<IAppTaskCollection> configureDelegate)
-            : this(serviceProvider.CreateScope(), configureDelegate, false)
+        public AppTaskCollection(IServiceProvider serviceProvider, CancellationToken? stoppingToken, Action<IAppTaskCollection> configureDelegate)
+            : this(serviceProvider.CreateScope(), stoppingToken, configureDelegate, false)
         {
             this.HasDisposableScope = true;
         }
 
-        public static AppTaskCollection CreateRoot(IServiceProvider serviceProvider, Action<IAppTaskCollection> configureDelegate)
+        public static AppTaskCollection CreateRoot(IServiceProvider serviceProvider, CancellationToken? stoppingToken, Action<IAppTaskCollection> configureDelegate)
         {
-            return new AppTaskCollection(serviceProvider, configureDelegate);
+            return new AppTaskCollection(serviceProvider, stoppingToken, configureDelegate);
         }
 
         public void Dispose()
@@ -59,7 +56,8 @@ namespace ArtMind.AppFlow
         {
             //_logger.LogInformation($"{this} - UseAppTask.");
 
-            ServiceTaskResolvers.Add(ctx => { appTaskDelegate(ctx); });
+            if (!IsCancellationRequested)
+                ServiceTaskResolvers.Add(ctx => { appTaskDelegate(ctx); });
 
             return this;
         }
@@ -70,6 +68,9 @@ namespace ArtMind.AppFlow
 
             void resolver(IAppContext ctx)
             {
+                if (IsCancellationRequested)
+                    return;
+
                 var serticeTask = _serviceScope.ServiceProvider.GetRequiredService<TAppTask>();
                 serticeTask.Execute(ctx);
             }
@@ -79,18 +80,14 @@ namespace ArtMind.AppFlow
 
         public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = true)
         {
-            //_logger.LogInformation($"{this} - UseIfBranch.");
-
             void resolver(IAppContext ctx)
             {
-                if (predicate(ctx) == false)
+                if (IsCancellationRequested && !predicate(ctx))
                     return;
 
-                using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, branchFlow, createNestedScope))
+                using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
                 {
-                    //_logger.LogInformation($"{this} - executing collection: {serviceTaskCollection} ...");
                     AppTaskCollectionEngine.Run(serviceTaskCollection, ctx);
-                    //_logger.LogInformation($"{this} - executed collection: {serviceTaskCollection}.");
                 }
             }
 
@@ -99,17 +96,13 @@ namespace ArtMind.AppFlow
 
         public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = true)
         {
-            //_logger.LogInformation($"{this} - AddBranchWhile.");
-
             void resolver(IAppContext ctx)
             {
-                while (predicate(ctx))
+                while (!IsCancellationRequested && predicate(ctx))
                 {
-                    using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, branchFlow, createNestedScope))
+                    using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
                     {
-                        //_logger.LogInformation($"{this} - executing collection: {serviceTaskCollection} ...");
                         AppTaskCollectionEngine.Run(serviceTaskCollection, ctx);
-                        //_logger.LogInformation($"{this} - executed collection: {serviceTaskCollection}.");
                     }
                 }
             };

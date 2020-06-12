@@ -11,18 +11,18 @@
     <PackageIcon>logo_128x128.png</PackageIcon>
     <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>appflow serviceflow flow manage chaine artmind fluent framework</PackageTags>
+    <PackageTags>applicatinoflow application appflow service serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
     <PackageReleaseNotes>Target framework upgrade</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
-    <Version>2.1.0</Version>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+    <Version>2.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ArtMind.AppFlow.Abstractions" Version="1.0.0" />
+    <PackageReference Include="ArtMind.AppFlow.Abstractions" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.5" />
   </ItemGroup>

@@ -7,9 +7,15 @@ namespace ArtMind.AppFlow
     {
         public static void Run(AppTaskCollection serviceTaskCollection, IAppContext context)
         {
-            var x = serviceTaskCollection.ServiceTaskResolvers.ToList();
-            foreach (var serviceTask in x)
+            if (serviceTaskCollection.IsCancellationRequested)
+                return;
+
+            var appTasks = serviceTaskCollection.ServiceTaskResolvers.ToList();
+            foreach (var serviceTask in appTasks)
             {
+                if (serviceTaskCollection.IsCancellationRequested)
+                    break;
+
                 serviceTask(context);
             }
         }

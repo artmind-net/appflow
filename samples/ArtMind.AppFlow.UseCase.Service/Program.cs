@@ -33,7 +33,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                 services.AddTransient<WhileWorker>();
                 services.AddTransient<FinishWorker>();
             })
-            .RegisterServiceFlow(flow =>
+            .RegisterAppFlow(flow =>
             {
                 flow.UseAppTask<InitCounterWorker>()
                 .UseIfBranch(ctx => ctx.HasCounter(), branchFlow =>
