@@ -1,13 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Company>ArtMind</Company>
     <Authors>Artiom Negara</Authors>
     <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
     <PackageIcon>logo_128x128.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Initial version</PackageReleaseNotes>
+    <PackageReleaseNotes>Target framework upgrade
+Moving abstraction into root namespace</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
@@ -17,6 +18,9 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>appflow serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
     <RootNamespace>ArtMind.AppFlow</RootNamespace>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>2.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
