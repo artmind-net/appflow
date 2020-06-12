@@ -14,4 +14,8 @@
     <Folder Include="Dependencies\" />
     <Folder Include="Abstractions\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ArtMind.AppFlow\ArtMind.AppFlow.csproj" />
+  </ItemGroup>
 </Project>

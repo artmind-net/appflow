@@ -1,4 +1,4 @@
-﻿namespace ArtMind.AppFlow.Abstractions
+﻿namespace ArtMind.AppFlow
 {
     public interface IAppTask
     {

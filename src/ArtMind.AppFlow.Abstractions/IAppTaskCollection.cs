@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ArtMind.AppFlow.Abstractions
+namespace ArtMind.AppFlow
 {
     public interface IAppTaskCollection
     {

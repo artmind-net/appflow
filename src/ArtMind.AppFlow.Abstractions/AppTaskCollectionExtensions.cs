@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ArtMind.AppFlow.Abstractions
+namespace ArtMind.AppFlow
 {
     public static class AppTaskCollectionExtensions
     {

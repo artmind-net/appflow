@@ -16,6 +16,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>appflow serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
+    <RootNamespace>ArtMind.AppFlow</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
