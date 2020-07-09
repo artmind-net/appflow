@@ -10,7 +10,7 @@ namespace ArtMind.AppFlow
             if (serviceTaskCollection.IsCancellationRequested)
                 return;
 
-            var appTasks = serviceTaskCollection.ServiceTaskResolvers.ToList();
+            var appTasks = serviceTaskCollection.ServiceTaskResolvers;
             foreach (var serviceTask in appTasks)
             {
                 if (serviceTaskCollection.IsCancellationRequested)

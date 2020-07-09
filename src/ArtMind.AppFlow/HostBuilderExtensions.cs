@@ -17,7 +17,7 @@ namespace ArtMind.AppFlow
 
                 services.AddHostedService(serviceProvider =>
                 {
-                    return serviceProvider.GetRequiredService<AppFlowHost>();
+                    return serviceProvider.GetRequiredService<ServiceFlowHost>();
                 });
             });
 

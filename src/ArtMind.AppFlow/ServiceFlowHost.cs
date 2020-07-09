@@ -28,23 +28,27 @@ namespace ArtMind.AppFlow
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            await ExecuteFlowAsync(stoppingToken);
+        }
+
+        private Task ExecuteFlowAsync(CancellationToken stoppingToken)
+        {
+            return Task.Run(() =>
             {
-                _logger.LogInformation($"{Environment.NewLine}{Environment.NewLine}{this} - running service flow cycle: {++_cycleCounter}");
-
-                CancellationToken? innerToken = null;
-                if (_tokenPropagation == CancellationTokenPropagation.InFlowDepth)
-                    innerToken = stoppingToken;
-
-                _appFlowContext.Clear();
-
-                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, innerToken, _configureDelegate))
+                while (!stoppingToken.IsCancellationRequested)
                 {
+                    _logger.LogInformation($"{Environment.NewLine}{Environment.NewLine}{this} - running service flow cycle: {++_cycleCounter}");
+
+                    CancellationToken? innerToken = null;
+                    if (_tokenPropagation == CancellationTokenPropagation.InFlowDepth)
+                        innerToken = stoppingToken;
+
+                    _appFlowContext.Clear();
+
+                    using var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, innerToken, _configureDelegate);
                     AppTaskCollectionEngine.Run(serviceTaskCollection, _appFlowContext);
                 }
-            }
-
-            await Task.CompletedTask;
+            });
         }
 
         public override string ToString()
