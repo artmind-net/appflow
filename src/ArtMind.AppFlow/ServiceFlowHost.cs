@@ -15,45 +15,45 @@ namespace ArtMind.AppFlow
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
         private readonly Action<IAppTaskCollection> _configureDelegate;
-        private readonly CancellationTokenPropagation _tokenPropagation;
 
-        public ServiceFlowHost(IServiceProvider serviceProvider, Action<IAppTaskCollection> configureDelegate, CancellationTokenPropagation tokenPropagation)
+        public ServiceFlowHost(IServiceProvider serviceProvider, Action<IAppTaskCollection> configureDelegate)
         {
             _serviceProvider = serviceProvider;
             _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
             _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
             _configureDelegate = configureDelegate;
-            _tokenPropagation = tokenPropagation;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await ExecuteFlowAsync(stoppingToken);
+            return Task.Run(() => { ExecuteFlow(stoppingToken); }, stoppingToken);
         }
 
-        private Task ExecuteFlowAsync(CancellationToken stoppingToken)
+        private void ExecuteFlow(CancellationToken stoppingToken)
         {
-            return Task.Run(() =>
+            try
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogInformation($"{Environment.NewLine}{Environment.NewLine}{this} - running service flow cycle: {++_cycleCounter}");
-
-                    CancellationToken? innerToken = null;
-                    if (_tokenPropagation == CancellationTokenPropagation.InFlowDepth)
-                        innerToken = stoppingToken;
+                    _logger.LogInformation($"{this} - running service flow cycle: {++_cycleCounter}");
 
                     _appFlowContext.Clear();
-
-                    using var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, innerToken, _configureDelegate);
-                    AppTaskCollectionEngine.Run(serviceTaskCollection, _appFlowContext);
+                    using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+                    {
+                        serviceTaskCollection.Run(_appFlowContext);
+                    }
                 }
-            });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{this} - service flow cycle: {_cycleCounter}, failed.");
+                stoppingToken.ThrowIfCancellationRequested();
+            }
         }
 
         public override string ToString()
         {
-            return $"{this.GetType().Name}: {_instanceKey}";
+            return $"{this.GetType().Name} [{_instanceKey}]";
         }
     }
 }

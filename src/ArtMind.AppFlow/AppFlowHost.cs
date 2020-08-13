@@ -33,31 +33,35 @@ namespace ArtMind.AppFlow
             return base.StopAsync(cancellationToken);
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await ExecuteFlowAsync(stoppingToken);
+            return Task.Run(() => { ExecuteFlow(stoppingToken); }, stoppingToken);
         }
 
-        private Task ExecuteFlowAsync(CancellationToken stoppingToken)
+        private  void ExecuteFlow(CancellationToken stoppingToken)
         {
-            return Task.Run(() =>
+            try
             {
-                _logger.LogInformation($"{this} >>> AppFlow started ...");
+                _logger.LogInformation($"{this} - app flow started ...");
 
                 _appFlowContext.Clear();
-
                 using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
                 {
-                    AppTaskCollectionEngine.Run(serviceTaskCollection, _appFlowContext);
+                    serviceTaskCollection.Run(_appFlowContext);
                 }
 
-                _logger.LogInformation($"{this} <<< AppFlow finished successfuly.");
-            });
+                _logger.LogInformation($"{this} - app flow finished successfuly. ...");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{this} - app flow failed.");
+                stoppingToken.ThrowIfCancellationRequested();
+            }
         }
 
         public override string ToString()
         {
-            return $"{this.GetType().Name}: {_instanceKey}";
+            return $"{this.GetType().Name} [{_instanceKey}]";
         }
     }
 }

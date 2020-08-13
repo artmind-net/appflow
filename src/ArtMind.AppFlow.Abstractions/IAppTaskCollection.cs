@@ -6,12 +6,12 @@ namespace ArtMind.AppFlow
     {
         IAppTaskCollection UseAppTask<TAppTask>() where TAppTask : IAppTask;
 
-        IAppTaskCollection UseAppTask(Action<IAppContext> appTaskDelegate);
+        IAppTaskCollection UseAppTask(Func<Action<IAppContext>> appTaskResolver);
 
         //IAppTaskCollection UseSiblingsAppTasks(Func<IAppContext>[] appTasks);
 
-        IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = true);
+        IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false);
 
-        IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = true);
+        IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false);
     }
 }

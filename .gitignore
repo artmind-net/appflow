@@ -12,3 +12,4 @@
 /samples/ArtMind.AppFlow.UseCase.Service/obj
 /samples/ArtMind.AppFlow.UseCase.Service/Properties/launchSettings.json
 /src/.vs/ArtMind.AppFlow/DesignTimeBuild/.dtbcache.v2
+*.user

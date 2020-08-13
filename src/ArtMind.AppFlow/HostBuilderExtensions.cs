@@ -6,14 +6,14 @@ namespace ArtMind.AppFlow
 {
     public static class HostBuilderExtensions
     {
-        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, Action<IAppTaskCollection> configureDelegate, CancellationTokenPropagation tokenPropagation = CancellationTokenPropagation.AtFlowCycle)
+        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, Action<IAppTaskCollection> configureDelegate)
         {
             var serviceFlowConfigureDelegate = configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate));
 
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IAppContext, AppContext>();
-                services.AddTransient(di => new ServiceFlowHost(di, configureDelegate, tokenPropagation));
+                services.AddTransient(di => new ServiceFlowHost(di, configureDelegate));
 
                 services.AddHostedService(serviceProvider =>
                 {
