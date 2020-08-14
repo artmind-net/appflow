@@ -7,6 +7,8 @@
     <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
     <PackageIcon>logo_128x128.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
+    <Title>ArtMind - App flow and Service flow framework</Title>
+    <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
     <PackageReleaseNotes>Target framework upgrade
 Moving abstraction into root namespace</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>

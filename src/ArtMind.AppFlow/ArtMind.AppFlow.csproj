@@ -2,23 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Authors>Artiom Negara</Authors>
+    <Authors>Artiom Negara</Authors>   
     <Company>ArtMind</Company>
     <Description>Flow orchestration framework for .NET applications</Description>
     <Copyright>© 2020 ArtMind</Copyright>
+    <Title>ArtMind - App flow and Service flow framework</Title>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
     <PackageIcon>logo_128x128.png</PackageIcon>
     <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>applicatinoflow application appflow service serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
-    <PackageReleaseNotes>Target framework upgrade</PackageReleaseNotes>
+    <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
+    <PackageReleaseNotes>Small fixes on app flow host</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>2.1.0.0</AssemblyVersion>
-    <FileVersion>2.1.0.0</FileVersion>
-    <Version>2.1.0.0</Version>
+    <AssemblyVersion>2.1.0.1</AssemblyVersion>
+    <FileVersion>2.1.0.1</FileVersion>
+    <Version>2.1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,6 +35,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\..\README.md">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+  </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj" />
   </ItemGroup>

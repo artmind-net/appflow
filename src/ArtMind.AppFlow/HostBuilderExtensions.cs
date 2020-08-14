@@ -13,7 +13,8 @@ namespace ArtMind.AppFlow
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IAppContext, AppContext>();
-                services.AddTransient(di => new ServiceFlowHost(di, configureDelegate));
+                services.AddSingleton(configureDelegate);
+                services.AddTransient<ServiceFlowHost>();
 
                 services.AddHostedService(serviceProvider =>
                 {
@@ -31,7 +32,8 @@ namespace ArtMind.AppFlow
             hostBuilder.ConfigureServices((hostContext, services) =>
             {
                 services.AddSingleton<IAppContext, AppContext>();
-                services.AddTransient(di => new AppFlowHost(di, configureDelegate));
+                services.AddSingleton(configureDelegate);
+                services.AddTransient<AppFlowHost>();
 
                 services.AddHostedService(serviceProvider =>
                 {

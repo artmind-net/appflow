@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>ArtMind - App flow and Service flow framework</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <language>English</language>
+    <icon>logo_128x128.png</icon>
+    <projectUrl>https://www.artmind.ro/appflow/</projectUrl>
+    <description>$description$</description>
+    <summary>AppFlow - a flow orchestration framework for .NET applications</summary>
+    <releaseNotes></releaseNotes>
+    <copyright>$copyright$</copyright>
+    <tags>applicatinoflow application appflow service serviceflow flow manage chaine artmind fluent framework abstraction</tags>
+    <repository type="git" url="https://github.com/artmind-net/appflow" />
+  </metadata>
+</package>

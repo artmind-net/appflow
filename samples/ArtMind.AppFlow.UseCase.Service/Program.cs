@@ -4,6 +4,7 @@ using ArtMind.AppFlow.UseCase.Service.Workers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ArtMind.AppFlow.UseCase.Service
 {
@@ -16,6 +17,7 @@ namespace ArtMind.AppFlow.UseCase.Service
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            .UseWindowsService()
             .ConfigureServices((hostContext, services) =>
             {
                 AppSettings appSetings = hostContext.Configuration
@@ -31,11 +33,20 @@ namespace ArtMind.AppFlow.UseCase.Service
                 services.AddTransient<InitCounterWorker>();
                 services.AddTransient<IfWorker>();
                 services.AddTransient<WhileWorker>();
+                services.AddTransient<ExWorker>();
                 services.AddTransient<FinishWorker>();
             })
+            .ConfigureLogging(logBuilder => 
+            {
+                logBuilder.AddConsole();
+                logBuilder.AddDebug();
+                //loggingBuilder.AddSerilog//(logger, dispose: true);
+            })
+            //.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); })
             .RegisterAppFlow(flow =>
             {
-                flow.UseAppTask<InitCounterWorker>()
+                flow
+                .UseAppTask<InitCounterWorker>()
                 .UseIfBranch(ctx => ctx.HasCounter(), branchFlow =>
                 {
                     branchFlow
@@ -45,8 +56,10 @@ namespace ArtMind.AppFlow.UseCase.Service
                     {
                         branchFlow.UseAppTask<WhileWorker>();
                     });
-                }, false)
+                }, true)
+                //.UseAppTask<ExWorker>()
                 .UseAppTask<FinishWorker>();
             });
+        // use dummy task
     }
 }
