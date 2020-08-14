@@ -35,5 +35,5 @@ steps:
     feedsToUse: 'select'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'ArtMind.AppFlow'
+    publishVstsFeed: 'AppFlow'
     allowPackageConflicts: true
