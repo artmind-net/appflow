@@ -7,11 +7,33 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build AppFlow'
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: "dotnet pack AppFlow"
+  inputs:
+    command: 'pack'
+    arguments: '--configuration $(buildConfiguration)'
+    packagesToPack: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
+    nobuild: true
+
+- task: NuGetCommand@2
+  displayName: 'nuget push AppFlow'
+  inputs:
+    command: 'push'
+    feedsToUse: 'select'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'ArtMind.AppFlow'
+    allowPackageConflicts: true
