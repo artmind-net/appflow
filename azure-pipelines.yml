@@ -28,6 +28,8 @@ steps:
     packagesToPack: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
     nobuild: true
 
+- task: NuGetAuthenticate@0
+  displayName: 'NuGet Authenticate'
 - task: NuGetCommand@2
   displayName: 'nuget push AppFlow'
   inputs:
@@ -36,5 +38,5 @@ steps:
     feedListPublish: ArtMind.AppFlow/AppFlow
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    vstsFeedPublish: 'AppFlow'
+    publishVstsFeed: 'appflow/master_feed'
     allowPackageConflicts: true
