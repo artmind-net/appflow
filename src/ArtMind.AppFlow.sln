@@ -3,13 +3,32 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow", "ArtMind.AppFlow\ArtMind.AppFlow.csproj", "{3AE9C14B-BD02-4953-BCDC-52E7CD649A55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow", "ArtMind.AppFlow\ArtMind.AppFlow.csproj", "{3AE9C14B-BD02-4953-BCDC-52E7CD649A55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.Abstractions", "ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj", "{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.Abstractions", "ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj", "{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.Service", "..\samples\ArtMind.AppFlow.UseCase.Service\ArtMind.AppFlow.UseCase.Service.csproj", "{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.UseCase.Service", "..\samples\ArtMind.AppFlow.UseCase.Service\ArtMind.AppFlow.UseCase.Service.csproj", "{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{77EF5696-9FC5-4D0A-B8F1-40FFE9D7659B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cidi", "cidi", "{1804C125-8CB9-4D6D-9A87-7AF435B5EAE6}"
+	ProjectSection(SolutionItems) = preProject
+		..\cicd\preview.yml = ..\cicd\preview.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8C4FD4D9-3E5D-4306-8114-A6BD2AD57889}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\README.md = ..\docs\README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "icons", "icons", "{1B4F874E-F0D4-40AC-9092-A56887A9BBDB}"
+	ProjectSection(SolutionItems) = preProject
+		..\docs\icons\favicon.ico = ..\docs\icons\favicon.ico
+		..\docs\icons\favicon_max.ico = ..\docs\icons\favicon_max.ico
+		..\docs\icons\logo.png = ..\docs\icons\logo.png
+		..\docs\icons\logo_128x128.png = ..\docs\icons\logo_128x128.png
+		..\docs\icons\logo_80x80.png = ..\docs\icons\logo_80x80.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +54,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B} = {77EF5696-9FC5-4D0A-B8F1-40FFE9D7659B}
+		{1B4F874E-F0D4-40AC-9092-A56887A9BBDB} = {8C4FD4D9-3E5D-4306-8114-A6BD2AD57889}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3D2C1899-DF0D-4BB5-BA79-4E77E5D62F64}
