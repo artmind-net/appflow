@@ -16,8 +16,7 @@ namespace ArtMind.AppFlow.UseCase.Service
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .UseWindowsService()
+            Host.CreateDefaultBuilder(args)            
             .ConfigureServices((hostContext, services) =>
             {
                 AppSettings appSetings = hostContext.Configuration
@@ -40,10 +39,9 @@ namespace ArtMind.AppFlow.UseCase.Service
             {
                 logBuilder.AddConsole();
                 logBuilder.AddDebug();
-                //loggingBuilder.AddSerilog//(logger, dispose: true);
             })
-            //.UseSerilog((ctx, config) => { config.ReadFrom.Configuration(ctx.Configuration); })
-            .RegisterAppFlow(flow =>
+            .RegisterAppFlow(flow => // your application will behave as an console app
+            //.RegisterServiceFlow(flow => // // your application will behave as an OS Service
             {
                 flow
                 .UseAppTask<InitCounterWorker>()
@@ -57,7 +55,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                         branchFlow.UseAppTask<WhileWorker>();
                     });
                 }, true)
-                //.UseAppTask<ExWorker>()
+                //.UseAppTask<ExWorker>() // uncomment this line to throw an error.
                 .UseAppTask<FinishWorker>();
             });
         // use dummy task
