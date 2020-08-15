@@ -33,6 +33,7 @@ steps:
   inputs:
     command: 'push'
     feedsToUse: 'select'
+    feedListPublish: ArtMind.AppFlow/AppFlow
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'AppFlow'
