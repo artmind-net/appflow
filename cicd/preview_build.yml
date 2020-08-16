@@ -1,0 +1,57 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- preview
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build: AppFlow'
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: "dotnet pack: AppFlow"
+  inputs:
+    command: 'pack'
+    arguments: '--configuration $(buildConfiguration)'
+    packagesToPack: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
+    nobuild: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build: AppFlow.Abstractions'
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'src/ArtMind.AppFlow.Abstractions/ArtMind.AppFlow.Abstractions.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: "dotnet pack: AppFlow.Abstractions"
+  inputs:
+    command: 'pack'
+    arguments: '--configuration $(buildConfiguration)'
+    packagesToPack: 'src/ArtMind.AppFlow.Abstractions/ArtMind.AppFlow.Abstractions.csproj'
+    nobuild: true
+
+- task: NuGetAuthenticate@0
+  displayName: 'nuget authenticate'
+
+- task: NuGetCommand@2
+  displayName: 'nuget push: PreviewFeed'
+  inputs:
+    command: 'push'
+    feedsToUse: 'select'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'AppFlow/PreviewFeed'
+    allowPackageConflicts: true

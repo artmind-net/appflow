@@ -13,7 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{77EF
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cidi", "cidi", "{1804C125-8CB9-4D6D-9A87-7AF435B5EAE6}"
 	ProjectSection(SolutionItems) = preProject
-		..\cicd\preview.yml = ..\cicd\preview.yml
+		..\cicd\live_build.yml = ..\cicd\live_build.yml
+		..\cicd\preview_build.yml = ..\cicd\preview_build.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{8C4FD4D9-3E5D-4306-8114-A6BD2AD57889}"

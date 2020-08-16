@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- preview
+- master
 
 pool:
   vmImage: 'windows-latest'
@@ -14,14 +14,14 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build AppFlow'
+  displayName: 'dotnet build: AppFlow'
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
     projects: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: "dotnet pack AppFlow"
+  displayName: "dotnet pack: AppFlow"
   inputs:
     command: 'pack'
     arguments: '--configuration $(buildConfiguration)'
@@ -29,14 +29,14 @@ steps:
     nobuild: true
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet build AppFlow.Abstractions'
+  displayName: 'dotnet build: AppFlow.Abstractions'
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
     projects: 'src/ArtMind.AppFlow.Abstractions/ArtMind.AppFlow.Abstractions.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: "dotnet pack AppFlow.Abstractions"
+  displayName: "dotnet pack: AppFlow.Abstractions"
   inputs:
     command: 'pack'
     arguments: '--configuration $(buildConfiguration)'
@@ -47,11 +47,11 @@ steps:
   displayName: 'nuget authenticate'
 
 - task: NuGetCommand@2
-  displayName: 'nuget push'
+  displayName: 'nuget push: LiveFeed'
   inputs:
     command: 'push'
     feedsToUse: 'select'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'AppFlow/PreviewFeed'
+    publishVstsFeed: 'AppFlow/LiveFeed'
     allowPackageConflicts: true
