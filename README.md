@@ -4,9 +4,8 @@ The simple & quick way to create a .NET app flow.
 A management library for .NET applications with  a fluent API and easy to set up.
 
 [![Build Status](https://dev.azure.com/artmind-net/AppFlow/_apis/build/status/live_build?branchName=master)](https://dev.azure.com/artmind-net/AppFlow/_build/latest?definitionId=3&branchName=master)
-
-[![latest version] (https://img.shields.io/nuget/v/ArtMind.AppFlow)](https://www.nuget.org/packages/ArtMind.AppFlow) 
-[![downloads]      (https://img.shields.io/nuget/dt/ArtMind.AppFlow)](https://www.nuget.org/packages/ArtMind.AppFlow/)
+[![latest version](https://img.shields.io/nuget/v/ArtMind.AppFlow)](https://www.nuget.org/packages/ArtMind.AppFlow) 
+[![downloads](https://img.shields.io/nuget/dt/ArtMind.AppFlow)](https://www.nuget.org/packages/ArtMind.AppFlow/)
 
 
 ## Find out more
@@ -14,7 +13,8 @@ A management library for .NET applications with  a fluent API and easy to set up
 - [NuGet Package](https://www.nuget.org/packages/ArtMind.AppFlow)
 
 
-## Use RegisterAppFlow() and your application will behave as a console app
+## Use RegisterAppFlow()
+and your application will behave as a console app
 ```csharp
 .RegisterAppFlow(flow => 
 {
@@ -33,7 +33,8 @@ A management library for .NET applications with  a fluent API and easy to set up
 });
 ```
 
-## Use RegisterServiceFlow() and your application will behave as an OS Service
+## Use RegisterServiceFlow()
+and your application will behave as an OS Service
 ```csharp
 .RegisterServiceFlow(flow =>
 {
