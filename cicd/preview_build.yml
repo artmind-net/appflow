@@ -53,5 +53,6 @@ steps:
     feedsToUse: 'select'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'AppFlow/PreviewFeed'
+    vstsFeed: 'PreviewFeed'
+    publishVstsFeed: 'PreviewFeed'
     allowPackageConflicts: true
