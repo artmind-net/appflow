@@ -40,7 +40,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                 logBuilder.AddConsole();
                 logBuilder.AddDebug();
             })
-            .RegisterAppFlow(flow => // your application will behave as an console app
+            .RegisterAppFlow(flow => // your application will behave as a console app
             //.RegisterServiceFlow(flow => // // your application will behave as an OS Service
             {
                 flow
