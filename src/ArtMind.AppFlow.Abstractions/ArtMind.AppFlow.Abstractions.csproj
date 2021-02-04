@@ -4,13 +4,12 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Company>ArtMind</Company>
     <Authors>Artiom Negara</Authors>
-    <RepositoryUrl>https://github.com/artmind-net/appflow</RepositoryUrl>
+    <RepositoryUrl>https://github.com/artmind-net/app-flow</RepositoryUrl>
     <PackageIcon>logo_128x128.png</PackageIcon>
     <RepositoryType>git</RepositoryType>
     <Title>ArtMind - App flow and Service flow framework</Title>
     <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
-    <PackageReleaseNotes>Target framework upgrade
-Moving abstraction into root namespace</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
@@ -18,7 +17,7 @@ Moving abstraction into root namespace</PackageReleaseNotes>
     <Description>Flow orchestration framework for .NET applications</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageTags>applicatinoflow application appflow service serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
+    <PackageTags>app-flow service-flow orchestration-framework abstraction app service flow management fluent</PackageTags>
     <RootNamespace>ArtMind.AppFlow</RootNamespace>
     <AssemblyVersion>2.1.0.0</AssemblyVersion>
     <FileVersion>2.1.0.0</FileVersion>

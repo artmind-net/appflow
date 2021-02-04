@@ -47,11 +47,12 @@ steps:
   displayName: 'nuget authenticate'
 
 - task: NuGetCommand@2
-  displayName: 'nuget push: LiveFeed'
+  displayName: 'nuget push: ReleaseFeed'
   inputs:
     command: 'push'
     feedsToUse: 'select'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'AppFlow/LiveFeed'
+    vstsFeed: 'ReleaseFeed'
+    publishVstsFeed: 'ReleaseFeed'
     allowPackageConflicts: true
