@@ -122,14 +122,14 @@ namespace ArtMind.AppFlow
         {
             var resolver = new Func<Action<IAppContext>>(() =>
             {
-                if (IsCancellationRequested)
-                    return (ctx) => { };
-
                 return (ctx) =>
                 {
-                    using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
+                    if (!IsCancellationRequested && predicate(ctx))
                     {
-                        serviceTaskCollection.Run(ctx);
+                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
+                        {
+                            serviceTaskCollection.Run(ctx);
+                        }
                     }
                 };
             });
