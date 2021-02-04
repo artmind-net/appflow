@@ -5,6 +5,8 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
 1. to do add task name
 1. create uniform logger
 1. add async tasks
+1. add parallel task number option
+1. remove redundant workers add transient ioc
 
 
 ```csharp
