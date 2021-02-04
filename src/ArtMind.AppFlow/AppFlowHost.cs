@@ -28,6 +28,8 @@ namespace ArtMind.AppFlow
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            //ServiceProviderFactory.ServiceProvider.GetServices(typeof(IFoo))
+
             try
             {
                 await ExecuteFlow(stoppingToken);
