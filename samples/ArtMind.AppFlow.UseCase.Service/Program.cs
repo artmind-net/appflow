@@ -33,7 +33,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                 services.AddTransient<InitCounterWorker>();
                 services.AddTransient<IfWorker>();
                 services.AddTransient<WhileWorker>();
-                services.AddTransient<ExWorker>();
+                services.AddTransient<ErrorWorker>();
                 services.AddTransient<FinishWorker>();
             })
             .ConfigureLogging(logBuilder => 
@@ -41,8 +41,8 @@ namespace ArtMind.AppFlow.UseCase.Service
                 logBuilder.AddConsole();
                 logBuilder.AddDebug();
             })
-            //.RegisterAppFlow(AppOptions.Schedule(DateTime.UtcNow.AddSeconds(5)), flow => // your application will behave as a console app
-            .RegisterServiceFlow(ServiceOptions.Options(2, TimeSpan.FromSeconds(2), DateTime.UtcNow.AddSeconds(5)),flow => // // your application will behave as an OS Service
+            //.RegisterAppFlow(AppOptions.Schedule(DateTime.UtcNow.AddSeconds(3)), flow => // your application will behave as a console app
+            .RegisterServiceFlow(ServiceOptions.Options(2, TimeSpan.FromSeconds(2), DateTime.UtcNow.AddSeconds(3)),flow => // // your application will behave as an OS Service
             {
                 flow
                 .UseAppTask<InitCounterWorker>()
@@ -58,7 +58,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                 }, elseBranchFlow =>
                 {
                     elseBranchFlow
-                        .UseAppTask<IfWorker>();
+                        .UseAppTask<ErrorWorker>();
                 }, true)
                 //.UseAppTask<ExWorker>() // uncomment this line to throw an error.
                 .UseAppTask<FinishWorker>();

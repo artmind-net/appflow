@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +16,9 @@ namespace ArtMind.AppFlow
         private readonly IServiceScope _serviceScope;
         private readonly CancellationToken _stoppingToken;
         //private readonly ILogger<AppFlowHost> _logger;
-        private bool _disposed = false;
+        private bool _disposed;
         
-        public bool IsCancellationRequested { get => _stoppingToken.IsCancellationRequested; }
+        public bool IsCancellationRequested => _stoppingToken.IsCancellationRequested;
         public List<Func<Action<IAppContext>>> ServiceAppTaskResolvers { get; } = new List<Func<Action<IAppContext>>>();
 
         #region Ctor
@@ -111,8 +110,8 @@ namespace ArtMind.AppFlow
                 if (IsCancellationRequested)
                     return (ctx) => { };
 
-                var serticeTask = _serviceScope.ServiceProvider.GetRequiredService<TAppTask>();
-                return serticeTask.Execute;
+                var serviceTask = _serviceScope.ServiceProvider.GetRequiredService<TAppTask>();
+                return serviceTask.Execute;
             });
 
             return UseAppTask(resolver);
@@ -127,6 +126,29 @@ namespace ArtMind.AppFlow
         {
             return UseIfElseBranch(predicate, ifBranchFlow, elseBranchFlow, createNestedScope);
         }
+
+        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
+        {
+            var resolver = new Func<Action<IAppContext>>(() =>
+            {
+                return (ctx) =>
+                {
+                    while (!IsCancellationRequested && predicate(ctx))
+                    {
+                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
+                        {
+                            serviceTaskCollection.Run(ctx);
+                        }
+                    }
+                };
+            });
+
+            return UseAppTask(resolver);
+        }
+
+        #endregion
+
+        #region Helpers
 
         private IAppTaskCollection UseIfElseBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope)
         {
@@ -154,30 +176,11 @@ namespace ArtMind.AppFlow
             return UseAppTask(resolver);
         }
 
-        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
-        {
-            var resolver = new Func<Action<IAppContext>>(() =>
-            {
-                return (ctx) =>
-                {
-                    while (!IsCancellationRequested && predicate(ctx))
-                    {
-                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
-                        {
-                            serviceTaskCollection.Run(ctx);
-                        }
-                    }
-                };
-            });
-
-            return UseAppTask(resolver);
-        }
-
-        #endregion
-
         public override string ToString()
         {
             return $"{this.GetType().Name}: {_instanceKey} [{ServiceAppTaskResolvers.Count}]";
         }
+
+        #endregion
     }
 }
