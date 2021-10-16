@@ -4,17 +4,20 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
 # todo
 1. [ ] to do add task name
 1. [ ] create uniform logger
-1. [ ] add async tasks
-4. [ ] add try catch workers/flow
-5. [x] Service Options:
-   * CyclesLimit _Maximum number of service flow cycles to be executed_
-   * MinCycleDuration _Minimum time interval duration of a service flow cycle, until to start next session._
-6. [ ] App Options
-   * PostponeInterval _Postpone application start. Flow will start after the postpone interval will elapse_
-   * Scheduler
-6. [ ] add multithreading
-7. [ ] add if [else] branch
-9. [ ] add nested workers / midlewere (inception) a->a1'->a''->.... to have control on try catch
-10. [ ] refactor icontext 
+5. [x] **Service Options**
+   - [x] _Occurrence_ The number of service flow cycles to be executed
+   - [x] _Recurrence_ The minimum time interval duration of a service flow cycle, until to start next session.
+   - [x] _Scheduler_ Schedule service to start at
+6. [x] **App Options**
+   - [x] _Postpone_ Postpone application start. Flow will start after the postpone interval will elapse
+   - [x] _Scheduler_ Schedule cycles
+6. [ ] **Multithreading** - runing multiple services/apps
+8. [ ] Flow Extentions
+   - [ ] IfBrach with else option
+   - [ ] Nested workers / middlewares (inception) a->a1'->a''->....
+1. [ ] AppTasks
+   1. [ ] TryTask 
+   1. [ ] Async tasks
+10. [ ] IContext as TIn TOut in the chaning of tasks
 11. [ ] Multithreading
 12. [ ] Application lifecycle

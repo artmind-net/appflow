@@ -11,7 +11,7 @@ namespace ArtMind.AppFlow
             return hostBuilder.RegisterServiceFlow(ServiceOptions.Default, configureDelegate);
         }
 
-        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, IServiceOptions options, Action<IAppTaskCollection> configureDelegate)
+        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, ServiceOptions options, Action<IAppTaskCollection> configureDelegate)
         {
             var serviceFlowConfigureDelegate = configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate));
 
@@ -33,7 +33,7 @@ namespace ArtMind.AppFlow
             return hostBuilder.RegisterAppFlow(AppOptions.Default, configureDelegate);
         }
 
-        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, IAppOptions options, Action<IAppTaskCollection> configureDelegate)
+        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, AppOptions options, Action<IAppTaskCollection> configureDelegate)
         {
             var serviceFlowConfigureDelegate = configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate));
 

@@ -11,7 +11,7 @@ namespace ArtMind.AppFlow
     public class ServiceFlowHost : BackgroundService
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
-        private ulong _cycleCounter = 0;
+        private ulong _cycleCounter;
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         private readonly IHostApplicationLifetime _appLifetime;
@@ -19,12 +19,12 @@ namespace ArtMind.AppFlow
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
         private readonly Action<IAppTaskCollection> _configureDelegate;
-        private readonly IServiceOptions _options;
+        private readonly ServiceOptions _options;
 
         public ServiceFlowHost(
             IHostApplicationLifetime appLifetime,
             IServiceProvider serviceProvider,
-            IServiceOptions options,
+            ServiceOptions options,
             Action<IAppTaskCollection> configureDelegate)
         {
             _appLifetime = appLifetime;
@@ -60,67 +60,49 @@ namespace ArtMind.AppFlow
                 _appLifetime.StopApplication();
             }
 
-            await Task.Run(() => {  }, stoppingToken);
+            await Task.Run(() => { }, stoppingToken);
         }
 
-        private Task ExecuteFlow(CancellationToken stoppingToken)
+        private async Task ExecuteFlow(CancellationToken stoppingToken)
         {
-            return Task.Run(() =>
+            if (_options.ShouldPostpone(out var postpone))
             {
-                while (!stoppingToken.IsCancellationRequested && IsCycleLimitNotExceeded(_cycleCounter))
+                _logger.LogInformation($"{this} - service will start at in {postpone}");
+                await Task.Delay(postpone, stoppingToken);
+            }
+
+            while (!stoppingToken.IsCancellationRequested && !_options.IsCycleLimitExceeded(_cycleCounter))
+            {
+                stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
+
+                if (_options.ShouldDelay(_stopwatch.Elapsed, out TimeSpan delay))
                 {
-                    stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
-
-                    if (HasToDelay(_stopwatch.Elapsed, out var delay))
-                    {
-                        _logger.LogInformation($"{this} - delaying service flow cycle: {_cycleCounter} for {delay}");
-                        Task.Delay(delay, stoppingToken).Wait(stoppingToken);
-                    }
-
-                    stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
-
-                    _stopwatch.Restart();
-                    _cycleCounter++;
-                    _appFlowContext.Clear();
-
-                    _logger.LogInformation($"{this} - running service flow cycle: {_cycleCounter}");
-                    
-                    using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
-                    {
-                        serviceTaskCollection.Run(_appFlowContext);
-                    }
-
-                    _stopwatch.Stop();
-
-                    _logger.LogInformation($"{this} - ran service flow cycle: {_cycleCounter} in { _stopwatch.Elapsed}");
+                    _logger.LogInformation($"{this} - delaying service flow cycle: {_cycleCounter} for {delay}");
+                    await Task.Delay(delay, stoppingToken);
                 }
 
-                if (IsCycleLimitExceeded(_cycleCounter))
+                stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
+
+                _stopwatch.Restart();
+                _cycleCounter++;
+                _appFlowContext.Clear();
+
+                _logger.LogInformation($"{this} - running service flow cycle: {_cycleCounter}");
+
+                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
                 {
-                    _logger.LogInformation($"{this} - flow stopped. The service flow reached the cycles limit.");
+                    serviceTaskCollection.Run(_appFlowContext);
                 }
 
-            }, stoppingToken);
-        }
+                _stopwatch.Stop();
 
-        private bool IsCycleLimitNotExceeded(ulong cycleCounter)
-        {
-            return _options.CyclesLimit == 0 || cycleCounter < _options.CyclesLimit;
-        }
+                _logger.LogInformation($"{this} - ran service flow cycle: {_cycleCounter} in { _stopwatch.Elapsed}");
+            }
 
-        private bool IsCycleLimitExceeded(ulong cycleCounter)
-        {
-            return !IsCycleLimitNotExceeded(cycleCounter);
-        }
-
-        private bool HasToDelay(TimeSpan duration, out TimeSpan delay)
-        {
-            delay = TimeSpan.Zero;
-
-            if(duration != TimeSpan.Zero && _options.MinCycleDuration > duration)
-                delay = _options.MinCycleDuration - duration;
-
-            return delay != TimeSpan.Zero;
+            if (_options.IsCycleLimitExceeded(_cycleCounter))
+            {
+                _logger.LogInformation($"{this} - flow stopped. The service flow reached the occurrence limit.");
+            }
         }
 
         public override string ToString()

@@ -16,23 +16,27 @@ namespace ArtMind.AppFlow
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
         private readonly Action<IAppTaskCollection> _configureDelegate;
+        private readonly AppOptions _options;
 
-        public AppFlowHost(IHostApplicationLifetime appLifetime, IServiceProvider serviceProvider, Action<IAppTaskCollection> configureDelegate)
+        public AppFlowHost(
+            IHostApplicationLifetime appLifetime,
+            IServiceProvider serviceProvider,
+            Action<IAppTaskCollection> configureDelegate,
+            AppOptions options)
         {
             _appLifetime = appLifetime;
             _serviceProvider = serviceProvider;
             _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
             _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
             _configureDelegate = configureDelegate;
+            _options = options;
         }
 
-        protected async override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            //ServiceProviderFactory.ServiceProvider.GetServices(typeof(IFoo))
-
             try
             {
-                await ExecuteFlow(stoppingToken);
+                await ExecuteFlowAsync(stoppingToken);
 
                 // see if the user pressed Ctrl+C
                 stoppingToken.ThrowIfCancellationRequested();
@@ -54,18 +58,25 @@ namespace ArtMind.AppFlow
             }
         }
 
-        private Task ExecuteFlow(CancellationToken stoppingToken)
+        private async Task ExecuteFlowAsync(CancellationToken stoppingToken)
         {
-            return Task.Run(() =>
+
+            if (_options.ShouldPostpone(out var postpone))
             {
-                _logger.LogInformation("{self} - app flow started at: {time}", this, DateTimeOffset.Now);
-                _appFlowContext.Clear();
-                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
-                {
-                    serviceTaskCollection.Run(_appFlowContext);
-                }
-                _logger.LogInformation("{self} - app flow finished successfuly at: {time}", this, DateTimeOffset.Now);
-            });
+                _logger.LogInformation($"{this} - app flow postponed for {postpone}");
+                await Task.Delay(postpone, stoppingToken);
+            }
+
+            _logger.LogInformation($"{this} - app flow started at: {DateTimeOffset.Now}");
+
+            _appFlowContext.Clear();
+
+            using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+            {
+                serviceTaskCollection.Run(_appFlowContext);
+            }
+
+            _logger.LogInformation($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
         }
 
         public override string ToString()

@@ -2,24 +2,49 @@
 
 namespace ArtMind.AppFlow
 {
-    public interface IAppOptions
+    public class AppOptions
     {
-        /// <summary>
-        /// Postpone application start. Flow will start after the postpone interval will elapse.
-        /// Default = TimeSpan.Zero, means no delay.
-        /// </summary>
-        TimeSpan PostponeInterval { get; }
-    }
+        private readonly TimeSpan _postponeInterval;
+        private readonly DateTime? _scheduleAt;
 
-    public class AppOptions: IAppOptions
-    {
-        public AppOptions(TimeSpan postpone)
+        private AppOptions(TimeSpan postpone, DateTime? schedule)
         {
-            PostponeInterval = postpone;
+            _postponeInterval = postpone;
+            _scheduleAt = schedule;
         }
 
-        public static AppOptions Default => new AppOptions(TimeSpan.Zero);
+        internal static AppOptions Default => new AppOptions(TimeSpan.Zero, null);
 
-        public TimeSpan PostponeInterval { get; private set; }
+        /// <summary>
+        /// Postpone application start.
+        /// </summary>
+        /// <param name="postponeInterval">Flow will start after the postpone interval elapses, Default = TimeSpan.Zero, means no delay.</param>
+        /// <returns></returns>
+        public static AppOptions Postpone(TimeSpan postponeInterval) => new AppOptions(postponeInterval, null);
+
+        /// <summary>
+        /// Schedule application start.
+        /// </summary>
+        /// <param name="_scheduleAt">UTC time when to schedule application to start</param>
+        /// <returns></returns>
+        public static AppOptions Schedule(DateTime _scheduleAt) => new AppOptions(TimeSpan.Zero, _scheduleAt);
+
+        #region Internal helpers
+
+        internal bool ShouldPostpone(out TimeSpan postpone)
+        {
+            postpone = TimeSpan.Zero;
+
+            if (_postponeInterval != TimeSpan.Zero)
+                postpone = _postponeInterval;
+            else if (_scheduleAt.HasValue  && _scheduleAt.Value > DateTime.UtcNow)
+            {
+                postpone = _scheduleAt.Value - DateTime.UtcNow;
+            }
+
+            return postpone != TimeSpan.Zero;
+        }
+
+        #endregion
     }
 }
