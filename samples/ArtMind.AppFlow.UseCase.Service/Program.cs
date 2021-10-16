@@ -55,6 +55,10 @@ namespace ArtMind.AppFlow.UseCase.Service
                     {
                         branchFlow.UseAppTask<WhileWorker>();
                     });
+                }, elseBranchFlow =>
+                {
+                    elseBranchFlow
+                        .UseAppTask<IfWorker>();
                 }, true)
                 //.UseAppTask<ExWorker>() // uncomment this line to throw an error.
                 .UseAppTask<FinishWorker>();

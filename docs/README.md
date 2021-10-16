@@ -13,7 +13,7 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
    - [x] _Scheduler_ Schedule cycles
 6. [ ] **Multithreading** - runing multiple services/apps
 8. [ ] Flow Extentions
-   - [ ] IfBrach with else option
+   - [x] if/else brach
    - [ ] Nested workers / middlewares (inception) a->a1'->a''->....
 1. [ ] AppTasks
    1. [ ] TryTask 

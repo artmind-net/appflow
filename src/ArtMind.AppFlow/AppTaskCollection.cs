@@ -120,13 +120,30 @@ namespace ArtMind.AppFlow
 
         public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
         {
+            return UseIfElseBranch(predicate, branchFlow, null, createNestedScope);
+        }
+
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope = false)
+        {
+            return UseIfElseBranch(predicate, ifBranchFlow, elseBranchFlow, createNestedScope);
+        }
+
+        private IAppTaskCollection UseIfElseBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope)
+        {
             var resolver = new Func<Action<IAppContext>>(() =>
             {
                 return (ctx) =>
                 {
                     if (!IsCancellationRequested && predicate(ctx))
                     {
-                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
+                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, ifBranchFlow, createNestedScope))
+                        {
+                            serviceTaskCollection.Run(ctx);
+                        }
+                    }
+                    else if (elseBranchFlow != null)
+                    {
+                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, elseBranchFlow, createNestedScope))
                         {
                             serviceTaskCollection.Run(ctx);
                         }
