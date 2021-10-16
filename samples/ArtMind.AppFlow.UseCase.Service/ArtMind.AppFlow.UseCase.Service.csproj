@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\ArtMind.AppFlow\ArtMind.AppFlow.csproj" />
   </ItemGroup>
 </Project>

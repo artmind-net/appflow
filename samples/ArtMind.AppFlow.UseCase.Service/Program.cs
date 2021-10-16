@@ -1,3 +1,4 @@
+using System;
 using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using ArtMind.AppFlow.UseCase.Service.Dependencies;
 using ArtMind.AppFlow.UseCase.Service.Workers;
@@ -19,11 +20,11 @@ namespace ArtMind.AppFlow.UseCase.Service
             Host.CreateDefaultBuilder(args)            
             .ConfigureServices((hostContext, services) =>
             {
-                AppSettings appSetings = hostContext.Configuration
+                AppSettings appSettings = hostContext.Configuration
                 .GetSection("AppSettings")
                 .Get<AppSettings>();
 
-                services.AddSingleton(appSetings);
+                services.AddSingleton(appSettings);
 
                 services.AddSingleton<ISingletonDependency, SingletonDependency>();
                 services.AddScoped<IScopedDependency, ScopedDependency>();
@@ -40,8 +41,8 @@ namespace ArtMind.AppFlow.UseCase.Service
                 logBuilder.AddConsole();
                 logBuilder.AddDebug();
             })
-            .RegisterAppFlow(flow => // your application will behave as a console app
-            //.RegisterServiceFlow(flow => // // your application will behave as an OS Service
+            //.RegisterAppFlow(flow => // your application will behave as a console app
+            .RegisterServiceFlow(new ServiceOptions(5, TimeSpan.FromSeconds(3)),flow => // // your application will behave as an OS Service
             {
                 flow
                 .UseAppTask<InitCounterWorker>()

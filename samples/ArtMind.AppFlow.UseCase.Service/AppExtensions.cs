@@ -1,5 +1,4 @@
-﻿using ArtMind.AppFlow.Abstractions;
-using ArtMind.AppFlow.UseCase.Service.Abstractions;
+﻿using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using ArtMind.AppFlow.UseCase.Service.Workers;
 using Microsoft.Extensions.Logging;
 using System;
@@ -25,6 +24,10 @@ namespace ArtMind.AppFlow.UseCase.Service
         public static void LogInformation(this ILogger<BaseWorker> logger, BaseWorker self, IAppContext ctx, ISingletonDependency sng, IScopedDependency scp, ITransientDependency trn)
         {
             logger.LogInformation($"{self} - executing ...{Environment.NewLine} context: {ctx} | dependencies: [{sng}, {scp}, {trn}]");
+        }
+        public static void LogDebug(this ILogger<BaseWorker> logger, BaseWorker self, IAppContext ctx, ISingletonDependency sng, IScopedDependency scp, ITransientDependency trn)
+        {
+            logger.LogDebug($"{self} - executing ...{Environment.NewLine} context: {ctx} | dependencies: [{sng}, {scp}, {trn}]");
         }
     }
 }

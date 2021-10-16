@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow", "ArtMind.AppFlow\ArtMind.AppFlow.csproj", "{3AE9C14B-BD02-4953-BCDC-52E7CD649A55}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.Abstractions", "ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj", "{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.UseCase.Service", "..\samples\ArtMind.AppFlow.UseCase.Service\ArtMind.AppFlow.UseCase.Service.csproj", "{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{77EF5696-9FC5-4D0A-B8F1-40FFE9D7659B}"
@@ -41,10 +39,6 @@ Global
 		{3AE9C14B-BD02-4953-BCDC-52E7CD649A55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AE9C14B-BD02-4953-BCDC-52E7CD649A55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AE9C14B-BD02-4953-BCDC-52E7CD649A55}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E370FD8C-4E94-4FBA-8317-E3FF933B36FB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9835343C-D4D4-4BEB-92B9-E44E8F0CD70B}.Release|Any CPU.ActiveCfg = Release|Any CPU

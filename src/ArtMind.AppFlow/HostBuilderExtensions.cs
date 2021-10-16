@@ -8,24 +8,10 @@ namespace ArtMind.AppFlow
     {
         public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, Action<IAppTaskCollection> configureDelegate)
         {
-            var serviceFlowConfigureDelegate = configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate));
-
-            hostBuilder.ConfigureServices((hostContext, services) =>
-            {
-                services.AddSingleton<IAppContext, AppContext>();
-                services.AddSingleton(configureDelegate);
-                services.AddTransient<ServiceFlowHost>();
-
-                services.AddHostedService(serviceProvider =>
-                {
-                    return serviceProvider.GetRequiredService<ServiceFlowHost>();
-                });
-            });
-
-            return hostBuilder;
+            return hostBuilder.RegisterServiceFlow(ServiceOptions.Default, configureDelegate);
         }
 
-        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, Action<IAppTaskCollection> configureDelegate)
+        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, IServiceOptions options, Action<IAppTaskCollection> configureDelegate)
         {
             var serviceFlowConfigureDelegate = configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate));
 
@@ -33,12 +19,32 @@ namespace ArtMind.AppFlow
             {
                 services.AddSingleton<IAppContext, AppContext>();
                 services.AddSingleton(configureDelegate);
+                services.AddSingleton(options);
+                services.AddTransient<ServiceFlowHost>();
+
+                services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<ServiceFlowHost>());
+            });
+
+            return hostBuilder;
+        }
+
+        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, Action<IAppTaskCollection> configureDelegate)
+        {
+            return hostBuilder.RegisterAppFlow(AppOptions.Default, configureDelegate);
+        }
+
+        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, IAppOptions options, Action<IAppTaskCollection> configureDelegate)
+        {
+            var serviceFlowConfigureDelegate = configureDelegate ?? throw new ArgumentNullException(nameof(configureDelegate));
+
+            hostBuilder.ConfigureServices((hostContext, services) =>
+            {
+                services.AddSingleton<IAppContext, AppContext>();
+                services.AddSingleton(configureDelegate);
+                services.AddSingleton(options);
                 services.AddTransient<AppFlowHost>();
 
-                services.AddHostedService(serviceProvider =>
-                {
-                    return serviceProvider.GetRequiredService<AppFlowHost>();
-                });
+                services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<AppFlowHost>());
             });
 
             return hostBuilder;

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+	<TargetFrameworks>net48;netstandard2.1;net5.0;</TargetFrameworks>
     <Authors>Artiom Negara</Authors>   
     <Company>ArtMind</Company>
     <Description>Flow orchestration framework for .NET applications</Description>
@@ -40,10 +40,6 @@
       <Pack>true</Pack>
       <PackagePath>\</PackagePath>
     </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>
