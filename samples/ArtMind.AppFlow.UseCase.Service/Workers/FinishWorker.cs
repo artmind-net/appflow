@@ -1,10 +1,11 @@
 ﻿using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using ArtMind.AppFlow.Tasks;
 
 namespace ArtMind.AppFlow.UseCase.Service.Workers
 {
-    public class FinishWorker : BaseWorker, IAppTask
+    public class FinishWorker : TraceTask
     {
         private readonly ILogger<FinishWorker> _logger;
         private readonly ISingletonDependency _singletonDependency;
@@ -14,7 +15,7 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
         public FinishWorker(ILogger<FinishWorker> logger,
             ISingletonDependency singletonDependency,
             IScopedDependency scopedDependency,
-            ITransientDependency transientDependency)
+            ITransientDependency transientDependency) : base(logger)
         {
             _logger = logger;
             _singletonDependency = singletonDependency;
@@ -22,7 +23,7 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
             _transientDependency = transientDependency;
         }
 
-        public void Execute(IAppContext context)
+        protected override void Execute(IAppContext context)
         {
             _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
             //throw new Exception("The ex ...");

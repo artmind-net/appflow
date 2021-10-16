@@ -1,9 +1,10 @@
+using ArtMind.AppFlow.Tasks;
 using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace ArtMind.AppFlow.UseCase.Service.Workers
 {
-    public class IfWorker : BaseWorker, IAppTask
+    public class IfWorker : TraceTask
     {
         private readonly ILogger<IfWorker> _logger;
         private readonly ISingletonDependency _singletonDependency;
@@ -13,7 +14,7 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
         public IfWorker(ILogger<IfWorker> logger,
             ISingletonDependency singletonDependency,
             IScopedDependency scopedDependency,
-            ITransientDependency transientDependency)
+            ITransientDependency transientDependency):base(logger)
         {
             _logger = logger;
             _singletonDependency = singletonDependency;
@@ -21,7 +22,7 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
             _transientDependency = transientDependency;
         }
 
-        public void Execute(IAppContext context)
+        protected override void Execute(IAppContext context)
         {
             _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
         }

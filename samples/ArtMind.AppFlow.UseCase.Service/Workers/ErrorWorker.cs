@@ -1,20 +1,21 @@
-﻿using ArtMind.AppFlow.UseCase.Service.Abstractions;
+﻿using ArtMind.AppFlow.Tasks;
+using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using Microsoft.Extensions.Logging;
 using System;
 
 namespace ArtMind.AppFlow.UseCase.Service.Workers
 {
-    public class ExWorker : BaseWorker, IAppTask
+    public class ErrorWorker : SafeTask
     {
-        private readonly ILogger<FinishWorker> _logger;
+        private readonly ILogger<ErrorWorker> _logger;
         private readonly ISingletonDependency _singletonDependency;
         private readonly IScopedDependency _scopedDependency;
         private readonly ITransientDependency _transientDependency;
 
-        public ExWorker(ILogger<FinishWorker> logger,
+        public ErrorWorker(ILogger<ErrorWorker> logger,
             ISingletonDependency singletonDependency,
             IScopedDependency scopedDependency,
-            ITransientDependency transientDependency)
+            ITransientDependency transientDependency) :base(logger)
         {
             _logger = logger;
             _singletonDependency = singletonDependency;
@@ -22,10 +23,15 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
             _transientDependency = transientDependency;
         }
 
-        public void Execute(IAppContext context)
+        protected override void Execute(IAppContext context)
         {
             _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
-            throw new Exception("The ex ...");
+            throw new Exception("The exception ...");
+        }
+
+        protected override void ExecuteCatch(IAppContext context)
+        {
+            _logger.LogInformation($"{this} Exception was handled");
         }
     }
 }

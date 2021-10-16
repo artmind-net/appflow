@@ -16,7 +16,8 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
    - [x] if/else brach
    - [ ] Nested workers / middlewares (inception) a->a1'->a''->....
 1. [ ] AppTasks
-   1. [ ] TryTask 
+   1. [x] AppTraceTask 
+   2. [x] AppSafeTask
    1. [ ] Async tasks
 10. [ ] IContext as TIn TOut in the chaning of tasks
 11. [ ] Multithreading
