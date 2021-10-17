@@ -9,7 +9,7 @@ namespace ArtMind.AppFlow
 {
     //public delegate void AppTaskResolver(IAppContext ctx);
 
-    public class AppTaskCollection : IAppTaskCollection, IAsyncDisposable, IDisposable
+    internal class AppTaskCollection : IAppTaskCollection, IAsyncDisposable, IDisposable
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
         private readonly bool _hasDisposableScope;
@@ -17,7 +17,7 @@ namespace ArtMind.AppFlow
         private readonly CancellationToken _stoppingToken;
         //private readonly ILogger<AppFlowHost> _logger;
         private bool _disposed;
-        
+
         public bool IsCancellationRequested => _stoppingToken.IsCancellationRequested;
         public List<Func<Action<IAppContext>>> ServiceAppTaskResolvers { get; } = new List<Func<Action<IAppContext>>>();
 

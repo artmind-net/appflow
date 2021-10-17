@@ -2,9 +2,9 @@
 
 namespace ArtMind.AppFlow
 {
-    public static class Extensions
+    internal static class Extensions
     {
-        public static string GetFriendlyName(this Type type)
+        internal static string GetFriendlyName(this Type type)
         {
             string friendlyName = type.Name;
             if (type.IsGenericType)

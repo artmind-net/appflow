@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ArtMind.AppFlow
 {
-    public class ServiceFlowHost : BackgroundService
+    internal class ServiceFlowHost : BackgroundService
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
         private ulong _cycleCounter;
@@ -63,46 +63,50 @@ namespace ArtMind.AppFlow
             await Task.Run(() => { }, stoppingToken);
         }
 
-        private async Task ExecuteFlow(CancellationToken stoppingToken)
+        private Task ExecuteFlow(CancellationToken stoppingToken)
         {
-            if (_options.ShouldPostpone(out var postpone))
+            return Task.Run( async () =>
             {
-                _logger.LogInformation($"{this} - service will start at in {postpone}");
-                await Task.Delay(postpone, stoppingToken);
-            }
-
-            while (!stoppingToken.IsCancellationRequested && !_options.IsCycleLimitExceeded(_cycleCounter))
-            {
-                stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
-
-                if (_options.ShouldDelay(_stopwatch.Elapsed, out TimeSpan delay))
+                if (_options.ShouldPostpone(out var postpone))
                 {
-                    _logger.LogInformation($"{this} - delaying service flow cycle: {_cycleCounter} for {delay}");
-                    await Task.Delay(delay, stoppingToken);
+                    _logger.LogInformation($"{this} - service will start at in {postpone}");
+                    await Task.Delay(postpone, stoppingToken);
                 }
 
-                stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
-
-                _stopwatch.Restart();
-                _cycleCounter++;
-                _appFlowContext.Clear();
-
-                _logger.LogInformation($"{this} - running service flow cycle: {_cycleCounter}");
-
-                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+                while (!stoppingToken.IsCancellationRequested && !_options.IsCycleLimitExceeded(_cycleCounter))
                 {
-                    serviceTaskCollection.Run(_appFlowContext);
+                    stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
+
+                    if (_options.ShouldDelay(_stopwatch.Elapsed, out TimeSpan delay))
+                    {
+                        _logger.LogInformation($"{this} - delaying service flow cycle: {_cycleCounter} for {delay}");
+                        await Task.Delay(delay, stoppingToken);
+                    }
+
+                    stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
+
+                    _stopwatch.Restart();
+                    _cycleCounter++;
+                    _appFlowContext.Clear();
+
+                    _logger.LogInformation($"{this} - running service flow cycle: {_cycleCounter}");
+
+                    using (var serviceTaskCollection =
+                        AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+                    {
+                        serviceTaskCollection.Run(_appFlowContext);
+                    }
+
+                    _stopwatch.Stop();
+
+                    _logger.LogInformation($"{this} - ran service flow cycle: {_cycleCounter} in {_stopwatch.Elapsed}");
                 }
 
-                _stopwatch.Stop();
-
-                _logger.LogInformation($"{this} - ran service flow cycle: {_cycleCounter} in { _stopwatch.Elapsed}");
-            }
-
-            if (_options.IsCycleLimitExceeded(_cycleCounter))
-            {
-                _logger.LogInformation($"{this} - flow stopped. The service flow reached the occurrence limit.");
-            }
+                if (_options.IsCycleLimitExceeded(_cycleCounter))
+                {
+                    _logger.LogInformation($"{this} - flow stopped. The service flow reached the occurrence limit.");
+                }
+            }, stoppingToken);
         }
 
         public override string ToString()

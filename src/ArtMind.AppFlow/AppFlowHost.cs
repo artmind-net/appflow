@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ArtMind.AppFlow
 {
-    public class AppFlowHost : BackgroundService
+    internal class AppFlowHost : BackgroundService
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
 
@@ -58,25 +58,29 @@ namespace ArtMind.AppFlow
             }
         }
 
-        private async Task ExecuteFlowAsync(CancellationToken stoppingToken)
+        private Task ExecuteFlowAsync(CancellationToken stoppingToken)
         {
-
-            if (_options.ShouldPostpone(out var postpone))
+            return Task.Run(async () =>
             {
-                _logger.LogInformation($"{this} - app flow postponed for {postpone}");
-                await Task.Delay(postpone, stoppingToken);
-            }
 
-            _logger.LogInformation($"{this} - app flow started at: {DateTimeOffset.Now}");
+                if (_options.ShouldPostpone(out var postpone))
+                {
+                    _logger.LogInformation($"{this} - app flow postponed for {postpone}");
+                    await Task.Delay(postpone, stoppingToken);
+                }
 
-            _appFlowContext.Clear();
+                _logger.LogInformation($"{this} - app flow started at: {DateTimeOffset.Now}");
 
-            using (var serviceTaskCollection = AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
-            {
-                serviceTaskCollection.Run(_appFlowContext);
-            }
+                _appFlowContext.Clear();
 
-            _logger.LogInformation($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
+                using (var serviceTaskCollection =
+                    AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+                {
+                    serviceTaskCollection.Run(_appFlowContext);
+                }
+
+                _logger.LogInformation($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
+            }, stoppingToken);
         }
 
         public override string ToString()

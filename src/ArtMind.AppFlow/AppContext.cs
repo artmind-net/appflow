@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace ArtMind.AppFlow
 {
-    public class AppContext : IAppContext
+    internal class AppContext : IAppContext
     {
         // ToDo: performance
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");

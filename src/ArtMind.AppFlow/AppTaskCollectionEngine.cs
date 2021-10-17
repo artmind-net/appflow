@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace ArtMind.AppFlow
 {
-    public static class AppTaskCollectionEngine
+    internal static class AppTaskCollectionEngine
     {
         internal static void Run(this AppTaskCollection serviceTaskCollection, IAppContext context)
         {
