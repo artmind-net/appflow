@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace ArtMind.AppFlow
+﻿namespace ArtMind.AppFlow
 {
     internal static class AppTaskCollectionEngine
     {
@@ -21,20 +18,20 @@ namespace ArtMind.AppFlow
             }
         }
 
-        internal static async Task RunAsync(this AppTaskCollection serviceTaskCollection, IAppContext context, CancellationToken stoppingToke)
-        {
-            if (serviceTaskCollection.IsCancellationRequested)
-                return;
+        //internal static async Task RunAsync(this AppTaskCollection serviceTaskCollection, IAppContext context, CancellationToken stoppingToke)
+        //{
+        //    if (serviceTaskCollection.IsCancellationRequested)
+        //        return;
 
-            foreach (var taskResolver in serviceTaskCollection.ServiceAppTaskResolvers)
-            {
-                if (serviceTaskCollection.IsCancellationRequested)
-                    break;
+        //    foreach (var taskResolver in serviceTaskCollection.ServiceAppTaskResolvers)
+        //    {
+        //        if (serviceTaskCollection.IsCancellationRequested)
+        //            break;
 
-                taskResolver
-                    .Invoke()
-                    .Invoke(context);
-            }
-        }
+        //        taskResolver
+        //            .Invoke()
+        //            .Invoke(context);
+        //    }
+        //}
     }
 }
