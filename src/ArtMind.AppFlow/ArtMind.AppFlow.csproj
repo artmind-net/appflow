@@ -14,7 +14,21 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>applicatinoflow application appflow service serviceflow flow manage chaine artmind fluent framework abstractions</PackageTags>
     <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
-    <PackageReleaseNotes>Small fixes on app flow host</PackageReleaseNotes>
+    <PackageReleaseNotes>
+		New features:
+	    1. **Service Options**
+		   - _Occurrence_ The number of service flow cycles to be executed
+		   - _Recurrence_ The minimum time interval duration of a service flow cycle, until to start next session.
+		   - _Scheduler_ Schedule service to start at
+		2. **App Options**
+		   - _Postpone_ Postpone application start. Flow will start after the postpone interval will elapse
+		   - _Scheduler_ Schedule cycles
+		3. **Flow extentions**
+		   - if/else brach (extending current if branch with if/else branches)
+		4. **Abstract taks: AppTasks**
+		   - AppTraceTask: tracks the task execution.
+		   - AppSafeTask: wraps task execution in a try/catch block
+	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
