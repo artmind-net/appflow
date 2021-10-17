@@ -41,8 +41,8 @@ namespace ArtMind.AppFlow.UseCase.Service
                 logBuilder.AddConsole();
                 logBuilder.AddDebug();
             })
-            //.RegisterAppFlow(AppOptions.Schedule(DateTime.UtcNow.AddSeconds(3)), flow => // your application will behave as a console app
-            .RegisterServiceFlow(ServiceOptions.Options(2, TimeSpan.FromSeconds(2), DateTime.UtcNow.AddSeconds(3)),flow => // // your application will behave as an OS Service
+            .RegisterAppFlow(AppOptions.Schedule(DateTime.UtcNow.AddSeconds(3)), flow => // your application will behave as a console app
+            //.RegisterServiceFlow(ServiceOptions.Occurrence(3),flow => // // your application will behave as an OS Service
             {
                 flow
                 .UseAppTask<InitCounterWorker>()

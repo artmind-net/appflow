@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging;
 
 namespace ArtMind.AppFlow.UseCase.Service.Workers
 {
-    public class SafeWorker : TraceTask
+    public class Worker : TraceTask
     {
-        private readonly ILogger<SafeWorker> _logger;
+        private readonly ILogger<Worker> _logger;
         private readonly ISingletonDependency _singletonDependency;
         private readonly IScopedDependency _scopedDependency;
         private readonly ITransientDependency _transientDependency;
 
-        public SafeWorker(ILogger<SafeWorker> logger,
+        public Worker(ILogger<Worker> logger,
             ISingletonDependency singletonDependency,
             IScopedDependency scopedDependency,
             ITransientDependency transientDependency) : base(logger)
@@ -24,7 +24,8 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
 
         protected override void Execute(IAppContext context)
         {
-            _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
+            //_logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
+            _logger.LogInformation("worker");
         }
     }
 }

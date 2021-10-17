@@ -65,11 +65,11 @@ namespace ArtMind.AppFlow
 
                 if (_options.ShouldPostpone(out var postpone))
                 {
-                    _logger.LogInformation($"{this} - app flow postponed for {postpone}");
+                    _logger.LogTrace($"{this} - app flow postponed for {postpone}");
                     await Task.Delay(postpone, stoppingToken);
                 }
 
-                _logger.LogInformation($"{this} - app flow started at: {DateTimeOffset.Now}");
+                _logger.LogTrace($"{this} - app flow started at: {DateTimeOffset.Now}");
 
                 _appFlowContext.Clear();
 
@@ -79,7 +79,7 @@ namespace ArtMind.AppFlow
                     serviceTaskCollection.Run(_appFlowContext);
                 }
 
-                _logger.LogInformation($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
+                _logger.LogTrace($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
             }, stoppingToken);
         }
 

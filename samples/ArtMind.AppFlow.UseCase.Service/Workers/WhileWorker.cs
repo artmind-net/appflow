@@ -24,7 +24,7 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
 
         protected override void Execute(IAppContext context)
         {
-            _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
+            //_logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
             
             int counter = context.Get<int>(AppSettings.CounterKey);
             _logger.LogInformation($"{this} --- while counter: {counter}");

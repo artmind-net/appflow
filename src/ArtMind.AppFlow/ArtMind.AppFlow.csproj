@@ -26,7 +26,7 @@
 		3. **Flow extentions**
 		   - if/else brach (extending current if branch with if/else branches)
 		4. **Abstract taks: AppTasks**
-		   - AppTraceTask: tracks the task execution.
+		   - AppTraceTask: traces the task execution.
 		   - AppSafeTask: wraps task execution in a try/catch block
 	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>

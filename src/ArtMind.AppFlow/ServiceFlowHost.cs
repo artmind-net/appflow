@@ -67,9 +67,11 @@ namespace ArtMind.AppFlow
         {
             return Task.Run( async () =>
             {
+                _cycleCounter++;
+
                 if (_options.ShouldPostpone(out var postpone))
                 {
-                    _logger.LogInformation($"{this} - service will start at in {postpone}");
+                    _logger.LogTrace($"{this} - service will start in {postpone}");
                     await Task.Delay(postpone, stoppingToken);
                 }
 
@@ -79,17 +81,16 @@ namespace ArtMind.AppFlow
 
                     if (_options.ShouldDelay(_stopwatch.Elapsed, out TimeSpan delay))
                     {
-                        _logger.LogInformation($"{this} - delaying service flow cycle: {_cycleCounter} for {delay}");
+                        _logger.LogTrace($"{this} - delaying service flow cycle: {_cycleCounter} for {delay}");
                         await Task.Delay(delay, stoppingToken);
                     }
 
                     stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
 
                     _stopwatch.Restart();
-                    _cycleCounter++;
                     _appFlowContext.Clear();
 
-                    _logger.LogInformation($"{this} - running service flow cycle: {_cycleCounter}");
+                    _logger.LogTrace($"{this} - running service flow cycle: {_cycleCounter}");
 
                     using (var serviceTaskCollection =
                         AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
@@ -99,12 +100,12 @@ namespace ArtMind.AppFlow
 
                     _stopwatch.Stop();
 
-                    _logger.LogInformation($"{this} - ran service flow cycle: {_cycleCounter} in {_stopwatch.Elapsed}");
+                    _logger.LogTrace($"{this} - ran service flow cycle: {_cycleCounter} in {_stopwatch.Elapsed}");
                 }
 
                 if (_options.IsCycleLimitExceeded(_cycleCounter))
                 {
-                    _logger.LogInformation($"{this} - flow stopped. The service flow reached the occurrence limit.");
+                    _logger.LogTrace($"{this} - flow stopped. The service flow reached the occurrence limit.");
                 }
             }, stoppingToken);
         }

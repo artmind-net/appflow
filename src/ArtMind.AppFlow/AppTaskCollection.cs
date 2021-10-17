@@ -74,14 +74,14 @@ namespace ArtMind.AppFlow
 
             if (disposing)
             {
-                //_logger.LogInformation($"{this} - Disposing ...");
+                //_logger.LogTrace($"{this} - Disposing ...");
 
                 ServiceAppTaskResolvers.Clear();
 
                 if (_hasDisposableScope)
                     _serviceScope.Dispose();
 
-                //_logger.LogInformation($"{this} - Disposed.");});
+                //_logger.LogTrace($"{this} - Disposed.");});
             }
 
             _disposed = true;
@@ -93,7 +93,7 @@ namespace ArtMind.AppFlow
 
         public IAppTaskCollection UseAppTask(Func<Action<IAppContext>> appTaskResolver)
         {
-            //_logger.LogInformation($"{this} - UseAppTask.");
+            //_logger.LogTrace($"{this} - UseAppTask.");
 
             if (!IsCancellationRequested)
                 ServiceAppTaskResolvers.Add(appTaskResolver);
@@ -103,7 +103,7 @@ namespace ArtMind.AppFlow
 
         public IAppTaskCollection UseAppTask<TAppTask>() where TAppTask : IAppTask
         {
-            //_logger.LogInformation($"{this} - UseAppTask<>.");
+            //_logger.LogTrace($"{this} - UseAppTask<>.");
 
             var resolver = new Func<Action<IAppContext>>(() => 
             {

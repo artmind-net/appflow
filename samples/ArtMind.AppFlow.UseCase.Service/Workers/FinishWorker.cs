@@ -25,7 +25,7 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
 
         protected override void Execute(IAppContext context)
         {
-            _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
+           // _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
             //throw new Exception("The ex ...");
             _logger.LogInformation("By by i was the last worker in the flow.");
             Task.Delay(1000);
