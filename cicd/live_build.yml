@@ -28,6 +28,21 @@ steps:
     packagesToPack: 'src/ArtMind.AppFlow/ArtMind.AppFlow.csproj'
     nobuild: true
 
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build: AppFlow.Abstractions'
+  inputs:
+    command: 'build'
+    arguments: '--configuration $(buildConfiguration)'
+    projects: 'src/ArtMind.AppFlow.Abstractions/ArtMind.AppFlow.Abstractions.csproj'
+
+- task: DotNetCoreCLI@2
+  displayName: "dotnet pack: AppFlow.Abstractions"
+  inputs:
+    command: 'pack'
+    arguments: '--configuration $(buildConfiguration)'
+    packagesToPack: 'src/ArtMind.AppFlow.Abstractions/ArtMind.AppFlow.Abstractions.csproj'
+    nobuild: true
+
 - task: NuGetAuthenticate@0
   displayName: 'nuget authenticate'
 
