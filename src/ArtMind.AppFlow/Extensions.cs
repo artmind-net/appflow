@@ -32,5 +32,15 @@ namespace ArtMind.AppFlow
         {
             return (cfg, taskClg) => { action(taskClg); };
         }
+
+        internal static Func<IConfiguration, ServiceOptions> ToOptionsFunc(this ServiceOptions options)
+        {
+            return cfg => options;
+        }
+
+        internal static Func<IConfiguration, AppOptions> ToOptionsFunc(this AppOptions options)
+        {
+            return cfg => options;
+        }
     }
 }

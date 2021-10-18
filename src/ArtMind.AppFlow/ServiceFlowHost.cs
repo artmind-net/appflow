@@ -25,15 +25,15 @@ namespace ArtMind.AppFlow
         public ServiceFlowHost(
             IHostApplicationLifetime appLifetime,
             IServiceProvider serviceProvider,
-            ServiceOptions options,
+            Func<IConfiguration, ServiceOptions> optionsDelegate,
             Action<IConfiguration, IAppTaskCollection> configureDelegate)
         {
             _appLifetime = appLifetime;
             _serviceProvider = serviceProvider;
             _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
             _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
+            _options = optionsDelegate?.Invoke(serviceProvider.GetService<IConfiguration>()) ?? ServiceOptions.Default;
             _configureDelegate = configureDelegate;
-            _options = options;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
