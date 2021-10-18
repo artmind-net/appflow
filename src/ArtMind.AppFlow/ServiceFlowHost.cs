@@ -68,8 +68,6 @@ namespace ArtMind.AppFlow
         {
             return Task.Run( async () =>
             {
-                _cycleCounter++;
-
                 if (_options.ShouldPostpone(out var postpone))
                 {
                     _logger.LogTrace($"{this} - service will start in {postpone}");
@@ -78,6 +76,8 @@ namespace ArtMind.AppFlow
 
                 while (!stoppingToken.IsCancellationRequested && !_options.IsCycleLimitExceeded(_cycleCounter))
                 {
+                    _cycleCounter++;
+
                     stoppingToken.ThrowIfCancellationRequested(); // check if Ctrl+C pressed 
 
                     if (_options.ShouldDelay(_stopwatch.Elapsed, out TimeSpan delay))

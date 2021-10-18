@@ -30,13 +30,15 @@
 		   - SafeTask: wraps task execution in a try/catch block
         5. Flow registragion
            - Exposing Microsoft.Extensions.Configuration.IConfiguration interface
+
+        Fix: Occurence counter bug.
 	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>3.0.2.2</AssemblyVersion>
-    <FileVersion>3.0.2.2</FileVersion>
-    <Version>3.0.2.2</Version>
+    <AssemblyVersion>3.0.2.3</AssemblyVersion>
+    <FileVersion>3.0.2.3</FileVersion>
+    <Version>3.0.2.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
