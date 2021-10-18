@@ -35,9 +35,9 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>app-flow service-flow orchestration-framework abstraction app service flow management fluent</PackageTags>
     <RootNamespace>ArtMind.AppFlow</RootNamespace>
-    <AssemblyVersion>3.0.2.3</AssemblyVersion>
-    <FileVersion>3.0.2.3</FileVersion>
-    <Version>3.0.2.3</Version>
+    <AssemblyVersion>3.0.2.4</AssemblyVersion>
+    <FileVersion>3.0.2.4</FileVersion>
+    <Version>3.0.2.4</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
