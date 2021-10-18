@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Configuration;
 
 namespace ArtMind.AppFlow
 {
@@ -25,6 +26,11 @@ namespace ArtMind.AppFlow
             }
 
             return friendlyName;
+        }
+
+        internal static Action<IConfiguration, IAppTaskCollection> ToConfigurableAction(this Action<IAppTaskCollection> action)
+        {
+            return (cfg, taskClg) => { action(taskClg); };
         }
     }
 }

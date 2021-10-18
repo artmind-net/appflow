@@ -25,9 +25,9 @@ namespace ArtMind.AppFlow
         /// <summary>
         /// Schedule application start.
         /// </summary>
-        /// <param name="_scheduleAt">UTC time when to schedule application to start</param>
+        /// <param name="scheduleAt">UTC time when to schedule application to start</param>
         /// <returns></returns>
-        public static AppOptions Schedule(DateTime _scheduleAt) => new AppOptions(TimeSpan.Zero, _scheduleAt);
+        public static AppOptions Schedule(DateTime scheduleAt) => new AppOptions(TimeSpan.Zero, scheduleAt);
 
         #region Internal helpers
 

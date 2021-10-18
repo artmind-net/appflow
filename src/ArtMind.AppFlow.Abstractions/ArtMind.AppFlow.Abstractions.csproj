@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFrameworks>net48;netstandard2.1;net5.0;</TargetFrameworks>
+    <Company>ArtMind</Company>
+    <Authors>Artiom Negara</Authors>
+    <RepositoryUrl>https://github.com/artmind-net/app-flow</RepositoryUrl>
+    <PackageIcon>logo_128x128.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <Title>ArtMind - App flow and Service flow framework</Title>
+    <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
+    <PackageReleaseNotes>
+	    New features:
+	    1. Service Options
+	    - Occurrence: The number of service flow cycles to be executed
+	    - Recurrence: The minimum time interval duration of a service flow cycle, until to start next session.
+	    - Scheduler: Schedule service to start at
+	    2. App Options
+	    - Postpone: Postpone application start. Flow will start after the postpone interval will elapse
+	    - Scheduler: Schedule cycles
+	    3. Flow extentions
+	    - if/else brach: extending current if branch with if/else branches
+	    4. Abstract taks: AppTasks
+	    - TraceTask: traces the task execution.
+	    - SafeTask: wraps task execution in a try/catch block
+	    5. Flow registragion
+	    - Exposing Microsoft.Extensions.Configuration.IConfiguration interface
+	</PackageReleaseNotes>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
+    <Copyright>© 2020 ArtMind</Copyright>
+    <Description>Flow orchestration framework for .NET applications</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTags>app-flow service-flow orchestration-framework abstraction app service flow management fluent</PackageTags>
+    <RootNamespace>ArtMind.AppFlow</RootNamespace>
+    <AssemblyVersion>3.0.2.1</AssemblyVersion>
+    <FileVersion>3.0.2.1</FileVersion>
+    <Version>3.0.2.1</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\docs\icons\logo_128x128.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.7" />
+  </ItemGroup>
+
+</Project>

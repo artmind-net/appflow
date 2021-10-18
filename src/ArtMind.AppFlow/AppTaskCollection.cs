@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace ArtMind.AppFlow
 {
@@ -23,23 +24,23 @@ namespace ArtMind.AppFlow
 
         #region Ctor
 
-        private AppTaskCollection(IServiceScope serviceScope, CancellationToken stoppingToken, Action<IAppTaskCollection> configureDelegate, bool useInnerScope)
+        private AppTaskCollection(IServiceScope serviceScope, CancellationToken stoppingToken, Action<IConfiguration, IAppTaskCollection> configureDelegate, bool useInnerScope)
         {
             _hasDisposableScope = useInnerScope;
             _serviceScope = useInnerScope ? serviceScope.ServiceProvider.CreateScope() : serviceScope;
             _stoppingToken = stoppingToken;
             //_logger = _serviceScope.ServiceProvider.GetRequiredService<ILogger<AppFlowHost>>();
-
-            configureDelegate(this);
+            var configuration = _serviceScope.ServiceProvider.GetService<IConfiguration>();
+            configureDelegate(configuration, this);
         }
 
-        public AppTaskCollection(IServiceProvider serviceProvider, CancellationToken stoppingToken, Action<IAppTaskCollection> configureDelegate)
+        public AppTaskCollection(IServiceProvider serviceProvider, CancellationToken stoppingToken, Action<IConfiguration, IAppTaskCollection> configureDelegate)
             : this(serviceProvider.CreateScope(), stoppingToken, configureDelegate, false)
         {
             this._hasDisposableScope = true;
         }
 
-        public static AppTaskCollection CreateRoot(IServiceProvider serviceProvider, CancellationToken stoppingToken, Action<IAppTaskCollection> configureDelegate)
+        public static AppTaskCollection CreateRoot(IServiceProvider serviceProvider, CancellationToken stoppingToken, Action<IConfiguration, IAppTaskCollection> configureDelegate)
         {
             return new AppTaskCollection(serviceProvider, stoppingToken, configureDelegate);
         }
@@ -119,15 +120,44 @@ namespace ArtMind.AppFlow
 
         public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
         {
-            return UseIfElseBranch(predicate, branchFlow, null, createNestedScope);
+            return UseIfElseBranch(predicate, branchFlow.ToConfigurableAction(), null, createNestedScope);
         }
 
         public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope = false)
         {
-            return UseIfElseBranch(predicate, ifBranchFlow, elseBranchFlow, createNestedScope);
+            return UseIfElseBranch(predicate, ifBranchFlow.ToConfigurableAction(), elseBranchFlow.ToConfigurableAction(), createNestedScope);
         }
 
         public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
+        {
+            var resolver = new Func<Action<IAppContext>>(() =>
+            {
+                return (ctx) =>
+                {
+                    while (!IsCancellationRequested && predicate(ctx))
+                    {
+                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow.ToConfigurableAction(), createNestedScope))
+                        {
+                            serviceTaskCollection.Run(ctx);
+                        }
+                    }
+                };
+            });
+
+            return UseAppTask(resolver);
+        }
+
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = false)
+        {
+            return UseIfElseBranch(predicate, branchFlow, null, createNestedScope);
+        }
+
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, Action<IConfiguration, IAppTaskCollection> elseBranchFlow, bool createNestedScope = false)
+        {
+            return UseIfElseBranch(predicate, ifBranchFlow, elseBranchFlow, createNestedScope);
+        }
+
+        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = false)
         {
             var resolver = new Func<Action<IAppContext>>(() =>
             {
@@ -150,7 +180,7 @@ namespace ArtMind.AppFlow
 
         #region Helpers
 
-        private IAppTaskCollection UseIfElseBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope)
+        private IAppTaskCollection UseIfElseBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, Action<IConfiguration, IAppTaskCollection> elseBranchFlow, bool createNestedScope)
         {
             var resolver = new Func<Action<IAppContext>>(() =>
             {

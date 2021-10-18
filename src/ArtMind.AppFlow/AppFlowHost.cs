@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace ArtMind.AppFlow
 {
@@ -15,13 +16,13 @@ namespace ArtMind.AppFlow
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
-        private readonly Action<IAppTaskCollection> _configureDelegate;
+        private readonly Action<IConfiguration, IAppTaskCollection> _configureDelegate;
         private readonly AppOptions _options;
 
         public AppFlowHost(
             IHostApplicationLifetime appLifetime,
             IServiceProvider serviceProvider,
-            Action<IAppTaskCollection> configureDelegate,
+            Action<IConfiguration, IAppTaskCollection> configureDelegate,
             AppOptions options)
         {
             _appLifetime = appLifetime;

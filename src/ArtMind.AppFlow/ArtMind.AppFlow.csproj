@@ -16,25 +16,27 @@
     <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
     <PackageReleaseNotes>
 		New features:
-	    1. **Service Options**
-		   - _Occurrence_ The number of service flow cycles to be executed
-		   - _Recurrence_ The minimum time interval duration of a service flow cycle, until to start next session.
-		   - _Scheduler_ Schedule service to start at
-		2. **App Options**
-		   - _Postpone_ Postpone application start. Flow will start after the postpone interval will elapse
-		   - _Scheduler_ Schedule cycles
-		3. **Flow extentions**
-		   - if/else brach (extending current if branch with if/else branches)
-		4. **Abstract taks: AppTasks**
-		   - AppTraceTask: traces the task execution.
-		   - AppSafeTask: wraps task execution in a try/catch block
+	    1. Service Options
+		   - Occurrence: The number of service flow cycles to be executed
+		   - Recurrence: The minimum time interval duration of a service flow cycle, until to start next session.
+		   - Scheduler: Schedule service to start at
+		2. App Options
+		   - Postpone: Postpone application start. Flow will start after the postpone interval will elapse
+		   - Scheduler: Schedule cycles
+		3. Flow extentions
+		   - if/else brach: extending current if branch with if/else branches
+		4. Abstract taks: AppTasks
+		   - TraceTask: traces the task execution.
+		   - SafeTask: wraps task execution in a try/catch block
+        5. Flow registragion
+           - Exposing Microsoft.Extensions.Configuration.IConfiguration interface
 	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
-    <FileVersion>3.0.1.0</FileVersion>
-    <Version>3.0.1.0</Version>
+    <AssemblyVersion>3.0.2.1</AssemblyVersion>
+    <FileVersion>3.0.2.1</FileVersion>
+    <Version>3.0.2.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,6 +56,10 @@
       <Pack>true</Pack>
       <PackagePath>\</PackagePath>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

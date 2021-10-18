@@ -18,6 +18,8 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
    - [x] AppTraceTask 
    - [x] AppSafeTask
    - [ ] Async tasks
+1. [x] **Flow registragion**
+   - [x] Exposing Microsoft.Extensions.Configuration.IConfiguration interface
 1. [ ] **Multithreading** - runing multiple services/apps
 1. [ ] IContext as TIn TOut in the chaning of tasks
 1. [ ] Application lifecycle
