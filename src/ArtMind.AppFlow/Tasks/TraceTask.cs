@@ -19,12 +19,21 @@ namespace ArtMind.AppFlow.Tasks
         void IAppTask.Execute(IAppContext context)
         {
             Logger.LogTrace($"{this} - task execution started");
-            
-            var sw = Stopwatch.StartNew();
-            Execute(context);
-            sw.Stop();
 
-            Logger.LogTrace($"{this} - task execution finished in  {sw.Elapsed}");
+            var sw = Stopwatch.StartNew();
+            try
+            {
+                Execute(context);
+            }
+            catch (Exception ex)
+            {
+                sw.Stop();
+                Logger.LogTrace($"{this} - task execution failed in {sw.Elapsed}");
+                throw new Exception(ex.Message, ex);
+            }
+
+            sw.Stop();
+            Logger.LogTrace($"{this} - task execution finished in {sw.Elapsed}");
         }
 
         public override string ToString()

@@ -18,14 +18,26 @@ namespace ArtMind.AppFlow.UseCase.Service
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)            
-            .ConfigureServices((hostContext, services) =>
+            .ConfigureLogging(logBuilder =>
             {
-                AppSettings appSettings = hostContext.Configuration
-                .GetSection("AppSettings")
-                .Get<AppSettings>();
+                logBuilder.AddConsole();
+                logBuilder.AddDebug();
+            })
+            //.RegisterAppFlow(AppOptions.Postpone(), flow => // your application will behave as a console app
+            .RegisterServiceFlow((cfg) =>
+            {
+                AppSettings appSettings = cfg
+                    .GetSection("AppSettings")
+                    .Get<AppSettings>();
+
+                return ServiceOptions.Options(4, TimeSpan.FromSeconds(3), DateTime.UtcNow.AddSeconds(2));
+            }, (cfg, services) =>
+            {
+                AppSettings appSettings = cfg
+                   .GetSection("AppSettings")
+                   .Get<AppSettings>();
 
                 services.AddSingleton(appSettings);
-
                 services.AddSingleton<ISingletonDependency, SingletonDependency>();
                 services.AddScoped<IScopedDependency, ScopedDependency>();
                 services.AddTransient<ITransientDependency, TransientDependency>();
@@ -35,14 +47,8 @@ namespace ArtMind.AppFlow.UseCase.Service
                 services.AddTransient<WhileWorker>();
                 services.AddTransient<ErrorWorker>();
                 services.AddTransient<FinishWorker>();
-            })
-            .ConfigureLogging(logBuilder => 
-            {
-                logBuilder.AddConsole();
-                logBuilder.AddDebug();
-            })
-            //.RegisterAppFlow(AppOptions.Postpone(), flow => // your application will behave as a console app
-            .RegisterServiceFlow(ServiceOptions.Options(3,TimeSpan.FromSeconds(3), DateTime.UtcNow.AddSeconds(2)) , (cfg, flow) => // // your application will behave as an OS Service
+
+            }, (cfg, flow) => // // your application will behave as an OS Service
             {
                 AppSettings appSettings = cfg
                     .GetSection("AppSettings")
@@ -64,7 +70,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                     elseBranchFlow
                         .UseAppTask<ErrorWorker>();
                 }, true)
-                //.UseAppTask<ExWorker>() // uncomment this line to throw an error.
+                .UseAppTask<ErrorWorker>() // uncomment this line to throw an error.
                 .UseAppTask<FinishWorker>();
             });
         // use dummy task

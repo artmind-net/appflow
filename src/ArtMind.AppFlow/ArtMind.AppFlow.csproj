@@ -36,9 +36,9 @@
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>3.0.2.4</AssemblyVersion>
-    <FileVersion>3.0.2.4</FileVersion>
-    <Version>3.0.2.4</Version>
+    <AssemblyVersion>3.0.3.0</AssemblyVersion>
+    <FileVersion>3.0.3.0</FileVersion>
+    <Version>3.0.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

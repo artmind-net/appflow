@@ -1,10 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace ArtMind.AppFlow
 {
@@ -49,6 +49,9 @@ namespace ArtMind.AppFlow
             }
             catch (Exception ex)
             {
+                if (ex.InnerException != null)
+                    ex = ex.InnerException;
+
                 _logger.LogError(ex, $"{this} - app flow failed.");
                 Environment.ExitCode = 1;
             }
@@ -59,29 +62,26 @@ namespace ArtMind.AppFlow
             }
         }
 
-        private Task ExecuteFlowAsync(CancellationToken stoppingToken)
+        private async Task ExecuteFlowAsync(CancellationToken stoppingToken)
         {
-            return Task.Run(async () =>
+
+            if (_options.ShouldPostpone(out var postpone))
             {
+                _logger.LogTrace($"{this} - app flow postponed for {postpone}");
+                await Task.Delay(postpone, stoppingToken);
+            }
 
-                if (_options.ShouldPostpone(out var postpone))
-                {
-                    _logger.LogTrace($"{this} - app flow postponed for {postpone}");
-                    await Task.Delay(postpone, stoppingToken);
-                }
+            _logger.LogTrace($"{this} - app flow started at: {DateTimeOffset.Now}");
 
-                _logger.LogTrace($"{this} - app flow started at: {DateTimeOffset.Now}");
+            _appFlowContext.Clear();
 
-                _appFlowContext.Clear();
+            using (var serviceTaskCollection =
+                AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+            {
+                serviceTaskCollection.Run(_appFlowContext);
+            }
 
-                using (var serviceTaskCollection =
-                    AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
-                {
-                    serviceTaskCollection.Run(_appFlowContext);
-                }
-
-                _logger.LogTrace($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
-            }, stoppingToken);
+            _logger.LogTrace($"{this} - app flow finished successfully at: {DateTimeOffset.Now}");
         }
 
         public override string ToString()

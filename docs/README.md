@@ -23,3 +23,5 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
 1. [ ] **Multithreading** - runing multiple services/apps
 1. [ ] IContext as TIn TOut in the chaning of tasks
 1. [ ] Application lifecycle
+1. [ ] Fixes
+   1. [x] Application recurrence should continue even if an error occurs.
