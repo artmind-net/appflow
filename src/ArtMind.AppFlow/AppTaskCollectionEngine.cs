@@ -6,15 +6,16 @@ namespace ArtMind.AppFlow
 {
     internal static class AppTaskCollectionEngine
     {
-        internal static void Run(this AppTaskCollection serviceTaskCollection, IAppContext context)
+        internal static void Run(this AppTaskCollection appTaskCollection, IAppContext context)
         {
-            if (serviceTaskCollection.IsCancellationRequested)
+            if (appTaskCollection.IsCancellationRequested)
                 return;
 
-            foreach (var taskResolver in serviceTaskCollection.ServiceAppTaskResolvers)
+            foreach (var taskResolver in appTaskCollection.ServiceAppTaskResolvers)
             {
-                if (serviceTaskCollection.IsCancellationRequested)
+                if (appTaskCollection.IsCancellationRequested)
                     break;
+                
                 try
                 {
                     taskResolver
@@ -23,7 +24,9 @@ namespace ArtMind.AppFlow
                 }
                 catch(Exception ex)
                 {
-                    throw new Exception(ex.Message, ex);
+                    // TODO: check error handling
+                     throw new Exception(ex.Message, ex);
+                    // throw ex;
                 }
             }
         }
