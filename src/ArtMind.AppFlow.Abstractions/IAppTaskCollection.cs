@@ -18,5 +18,13 @@ namespace ArtMind.AppFlow
         IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, bool createNestedScope = false);
         IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, Action<IConfiguration, IAppTaskCollection> elseBranchFlow, bool createNestedScope = false);
         IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = false);
+
+        IAppTaskCollection<TOut> UseAppTask<TFlowTask, TOut>() where TFlowTask : IAppTask<IAppContext, TOut>;
+    }
+
+    public interface IAppTaskCollection<TIn>
+    {
+        IAppTaskCollection<TOut> UseAppTask<TFlowTask, TOut>() where TFlowTask : IAppTask<TIn, TOut>;
+        IAppTaskCollection UseAppTask<TFlowTask>() where TFlowTask : IAppTask<TIn>;
     }
 }

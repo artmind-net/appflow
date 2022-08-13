@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net48;netstandard2.1;net5.0;</TargetFrameworks>
+	<TargetFrameworks>net48;netstandard2.1;net5.0;net6.0;</TargetFrameworks>
     <Company>ArtMind</Company>
     <Authors>Artiom Negara</Authors>
     <RepositoryUrl>https://github.com/artmind-net/app-flow</RepositoryUrl>
