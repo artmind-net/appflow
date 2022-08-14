@@ -11,8 +11,9 @@ namespace ArtMind.AppFlow
     internal class AppFlowHost : BackgroundService
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
-
+        
         private readonly IHostApplicationLifetime _appLifetime;
+        private readonly IServiceCollection _services;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
@@ -21,11 +22,13 @@ namespace ArtMind.AppFlow
 
         public AppFlowHost(
             IHostApplicationLifetime appLifetime,
+            IServiceCollection services,
             IServiceProvider serviceProvider,
             Action<IConfiguration, IAppTaskCollection> configureDelegate,
             Func<IConfiguration, AppOptions> optionsDelegate)
         {
             _appLifetime = appLifetime;
+            _services = services;
             _serviceProvider = serviceProvider;
             _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
             _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
@@ -75,8 +78,7 @@ namespace ArtMind.AppFlow
 
             _appFlowContext.Clear();
 
-            using (var serviceTaskCollection =
-                AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+            using (var serviceTaskCollection = AppTaskCollection.CreateRoot(stoppingToken, _configureDelegate, _services, _serviceProvider))
             {
                 serviceTaskCollection.Run(_appFlowContext);
             }
