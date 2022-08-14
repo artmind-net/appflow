@@ -16,6 +16,7 @@ namespace ArtMind.AppFlow
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         private readonly IHostApplicationLifetime _appLifetime;
+        private readonly IServiceCollection _services;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
@@ -24,11 +25,13 @@ namespace ArtMind.AppFlow
 
         public ServiceFlowHost(
             IHostApplicationLifetime appLifetime,
+            IServiceCollection services,
             IServiceProvider serviceProvider,
             Func<IConfiguration, ServiceOptions> optionsDelegate,
             Action<IConfiguration, IAppTaskCollection> configureDelegate)
         {
             _appLifetime = appLifetime;
+            _services = services;
             _serviceProvider = serviceProvider;
             _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
             _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
@@ -91,8 +94,7 @@ namespace ArtMind.AppFlow
 
                 _logger.LogTrace($"{this} - running service flow cycle: {_cycleCounter}");
 
-                using (var serviceTaskCollection =
-                    AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(stoppingToken, _configureDelegate, _services, _serviceProvider))
                 {
                     try
                     {
