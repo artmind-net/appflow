@@ -19,6 +19,11 @@ namespace ArtMind.AppFlow
             return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureFlowDelegate);
         }
 
+        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, Action<IConfiguration, IServiceCollection> configureServicesDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureServicesDelegate, configureFlowDelegate);
+        }
+
         public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, ServiceOptions options, Action<IAppTaskCollection> configureFlowDelegate)
         {
             return hostBuilder.RegisterServiceFlow(options.ToOptionsFunc(), configureFlowDelegate.ToConfigurableAction());
@@ -69,6 +74,11 @@ namespace ArtMind.AppFlow
         public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
         {
             return hostBuilder.RegisterAppFlow(AppOptions.Default, configureFlowDelegate);
+        }
+
+        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, Action<IConfiguration, IServiceCollection> configureServicesDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterAppFlow(AppOptions.Default.ToOptionsFunc(), configureServicesDelegate, configureFlowDelegate);
         }
 
         public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, AppOptions options, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
