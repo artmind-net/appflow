@@ -46,6 +46,7 @@ namespace ArtMind.AppFlow
                 services.AddSingleton<IAppContext, AppContext>();
                 services.AddSingleton(configureFlowDelegate);
                 services.AddSingleton(optionsDelegate);
+                services.AddSingleton(services);
                 services.AddTransient<ServiceFlowHost>();
                 
                 configureServicesDelegate?.Invoke(hostContext.Configuration, services);

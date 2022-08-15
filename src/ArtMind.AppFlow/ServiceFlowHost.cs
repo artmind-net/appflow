@@ -43,7 +43,7 @@ namespace ArtMind.AppFlow
         {
             try
             {
-                await ExecuteFlow(stoppingToken);
+                await ExecuteFlowAsync(stoppingToken);
 
                 // see if the user pressed Ctrl+C
                 stoppingToken.ThrowIfCancellationRequested();
@@ -55,6 +55,9 @@ namespace ArtMind.AppFlow
             }
             catch (Exception ex)
             {
+                if (ex.InnerException != null)
+                    ex = ex.InnerException;
+
                 _logger.LogError(ex, $"{this} - service flow failed.");
                 Environment.ExitCode = 1;
             }
@@ -62,12 +65,10 @@ namespace ArtMind.AppFlow
             {
                 // No matter what happens (success or exception), we need to indicate that it's time to stop the application.
                 _appLifetime.StopApplication();
-            }
-
-            await Task.Run(() => { }, stoppingToken);
+            }            
         }
 
-        private async Task ExecuteFlow(CancellationToken stoppingToken)
+        private async Task ExecuteFlowAsync(CancellationToken stoppingToken)
         {
             if (_options.ShouldPostpone(out var postpone))
             {
