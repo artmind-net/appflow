@@ -304,7 +304,7 @@ namespace ArtMind.AppFlow
 
         public bool IsCancellationRequested => _rootTaskCollection.IsCancellationRequested;
 
-        #region Ctor
+        #region Ctor & Builders & Destroyers
 
         internal AppTaskCollection(AppTaskCollection rootTaskCollection)
         {
