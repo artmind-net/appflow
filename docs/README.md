@@ -25,17 +25,3 @@ The simplest way to create .NET app flow is using the 'IHostBuilder' extension m
 1. [ ] ~Uniform logger~
 1. [x] Fixes
    1. [x] Application recurrence should continue even if an error occurs.
-
-
-   - sample console
-		* scenario 1: Text to speach:
-			* W1: Setup (say welcome, chouse instaled voice, save results)
-			* W2: ConsoleHandler (read console input)
-			* W3: Text to speach lib
-			* W4: Closure, save data, say goodby.
-		* scenario 2: ceva cu if 
-		* scenario 3: ceva cu while
-   - sample service
-		* scenario 1: ETL
-		* scenario 2: ForgetMe (BUS event) (un if ceva)
-		* scenario 3: ceva cu while
