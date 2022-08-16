@@ -1,0 +1,8 @@
+fruits cherries 2
+vegetables cucumber 2
+fruits bananas 3
+fruits peaches 2
+vegetables broccoli 2
+vegetables tomatoes 2
+vegetables eggplant 9
+vegetables carrots 3
