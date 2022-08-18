@@ -19,7 +19,7 @@
 		5. Flow registragion
 		- Additional extension registration method.
 
-		Extended: Target framework were extended to net6 also.
+		Extended: Target framework were extended to net6.
 	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>

@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "ArtMind.AppFlow.UseCase.DummyService": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

@@ -10,12 +10,12 @@ namespace ArtMind.AppFlow.UseCase.EtlService.Workers
 
         public LoadWorker(AppSettings appSettings)
         {
-            _outputDir = Path.Combine(appSettings.SourceDirectory, "output");
+            _outputDir = Path.Combine(appSettings.SourceDirectory, "output"); 
         }
 
         public override void Execute(IEnumerable<IGrouping<string, IMyData>> input)
         {
-            // dummy destination
+            // dummy destination 
             //foreach (var g in input)
             //{
             //    Console.WriteLine($"group: {g.Key}, numbers: [{string.Join(",", g.Select(x => x.Group).ToList())}]");
