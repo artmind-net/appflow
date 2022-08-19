@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFrameworks>net48;netstandard2.1;net5.0;</TargetFrameworks>
+	<TargetFrameworks>net48;netstandard2.1;net6.0;</TargetFrameworks>
     <Company>ArtMind</Company>
     <Authors>Artiom Negara</Authors>
     <RepositoryUrl>https://github.com/artmind-net/app-flow</RepositoryUrl>
@@ -10,14 +10,7 @@
     <Title>ArtMind - App flow and Service flow framework</Title>
     <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
     <PackageReleaseNotes>
-		New features:
-		    1. FlowTasks
-		        - A chain of tasks where the output type of the previous task became the input type for the following task. Task[T,TResult]
-		        - FlowTaskStart[TResult]: Where TResult is return type of Execute method
-		        - FlowTask[T,TResult]: Where T is input type of Execute method and TResult is return type of Execute method
-		        - FlowTaskEnd[T]: Where T is input type of Execute method
-		    2. Flow registragion
-		        - Additional extension registration method.
+		Upgrading to target framework net6
 	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
@@ -28,9 +21,9 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>app-flow service-flow orchestration-framework abstraction app service flow management fluent</PackageTags>
     <RootNamespace>ArtMind.AppFlow</RootNamespace>
-    <AssemblyVersion>5.0.0.0</AssemblyVersion>
-    <FileVersion>5.0.0.0</FileVersion>
-    <Version>5.0.0.0</Version>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+    <FileVersion>6.0.0.0</FileVersion>
+    <Version>6.0.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
