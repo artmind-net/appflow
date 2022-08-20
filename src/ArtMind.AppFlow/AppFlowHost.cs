@@ -38,6 +38,23 @@ namespace ArtMind.AppFlow
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            if (_appLifetime != null)
+            {
+                _appLifetime.ApplicationStarted.Register(() =>
+                {
+                    Task.Run(async () => await Execution(stoppingToken));
+                });
+            }
+            else
+            {
+                await Execution(stoppingToken);
+            }
+        }
+
+        #region Helpers
+
+        private async Task Execution(CancellationToken stoppingToken)
+        {
             try
             {
                 await ExecuteFlowAsync(stoppingToken);
@@ -65,9 +82,10 @@ namespace ArtMind.AppFlow
             }
         }
 
+        #endregion
+
         private async Task ExecuteFlowAsync(CancellationToken stoppingToken)
         {
-
             if (_options.ShouldPostpone(out var postpone))
             {
                 _logger.LogTrace($"{this} - app flow postponed for {postpone}");
