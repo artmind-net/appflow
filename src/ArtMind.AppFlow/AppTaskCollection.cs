@@ -5,44 +5,77 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ArtMind.AppFlow
 {
-    //public delegate void AppTaskResolver(IAppContext ctx);
-
     internal class AppTaskCollection : IAppTaskCollection, IAsyncDisposable, IDisposable
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
         private readonly bool _hasDisposableScope;
+        private readonly IServiceCollection _service;
         private readonly IServiceScope _serviceScope;
         private readonly CancellationToken _stoppingToken;
-        //private readonly ILogger<AppFlowHost> _logger;
+        private readonly ILogger<AppFlowHost> _logger;
+
+        /// <summary>
+        /// Overrides dessioncion to use or not the inner scope.
+        /// </summary>
+        private bool _hasNewServiceCollectionItems;
         private bool _disposed;
 
         public bool IsCancellationRequested => _stoppingToken.IsCancellationRequested;
         public List<Func<Action<IAppContext>>> ServiceAppTaskResolvers { get; } = new List<Func<Action<IAppContext>>>();
 
-        #region Ctor
+        #region Ctor & Builders & Destroyers
 
-        private AppTaskCollection(IServiceScope serviceScope, CancellationToken stoppingToken, Action<IConfiguration, IAppTaskCollection> configureDelegate, bool useInnerScope)
+        private AppTaskCollection(
+            CancellationToken stoppingToken, 
+            Action<IConfiguration,IAppTaskCollection> configureDelegate, 
+            IServiceCollection service, 
+            IServiceScope serviceScope, 
+            bool useInnerScope)
         {
-            _hasDisposableScope = useInnerScope;
-            _serviceScope = useInnerScope ? serviceScope.ServiceProvider.CreateScope() : serviceScope;
-            _stoppingToken = stoppingToken;
-            //_logger = _serviceScope.ServiceProvider.GetRequiredService<ILogger<AppFlowHost>>();
-            var configuration = _serviceScope.ServiceProvider.GetService<IConfiguration>();
+            _stoppingToken = stoppingToken;            
+            _service = service;            
+            _logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<AppFlowHost>>();
+            var configuration = serviceScope.ServiceProvider.GetService<IConfiguration>();
             configureDelegate(configuration, this);
+
+            // since the upper scope is missing the registered services, the creation of the inner scope starts to be a must. 
+            if (_hasNewServiceCollectionItems)
+            {
+                if (useInnerScope == false)
+                    _logger.LogWarning("Because the global scoped ServiceCollection is missing the ArtMind AppTask types (DependencyInjection), " +
+                        "the configuration for using the upper scope will be ignored and an inner scope will be created.");
+
+                _hasDisposableScope = true;
+                _serviceScope = _service.BuildServiceProvider().CreateScope();
+            }
+            else 
+            {
+                _hasDisposableScope = useInnerScope;
+                _serviceScope = serviceScope;
+            }
         }
 
-        public AppTaskCollection(IServiceProvider serviceProvider, CancellationToken stoppingToken, Action<IConfiguration, IAppTaskCollection> configureDelegate)
-            : this(serviceProvider.CreateScope(), stoppingToken, configureDelegate, false)
+        internal static AppTaskCollection CreateRoot(
+            CancellationToken stoppingToken, 
+            Action<IConfiguration, IAppTaskCollection> configureDelegate, 
+            IServiceCollection services,
+            IServiceProvider serviceProvider)
         {
-            this._hasDisposableScope = true;
+            return new AppTaskCollection(stoppingToken, configureDelegate, services, serviceProvider.CreateScope(), true);
         }
 
-        public static AppTaskCollection CreateRoot(IServiceProvider serviceProvider, CancellationToken stoppingToken, Action<IConfiguration, IAppTaskCollection> configureDelegate)
+        private AppTaskCollection CreateNested(
+            AppTaskCollection parrent,
+            Action<IConfiguration, IAppTaskCollection> configureDelegate,
+            bool useInnerScope)
         {
-            return new AppTaskCollection(serviceProvider, stoppingToken, configureDelegate);
+            var scope = useInnerScope ? parrent._serviceScope.ServiceProvider.CreateScope() : parrent._serviceScope;
+
+            return new AppTaskCollection(parrent._stoppingToken, configureDelegate, parrent._service, scope, useInnerScope);
         }
 
         public async ValueTask DisposeAsync()
@@ -70,7 +103,7 @@ namespace ArtMind.AppFlow
 
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed)            
+            if (_disposed)
                 return;
 
             if (disposing)
@@ -90,88 +123,125 @@ namespace ArtMind.AppFlow
 
         #endregion
 
-        #region IAppTaskCollection
+        #region IAppTaskCollection - UseAppTask
 
         public IAppTaskCollection UseAppTask(Func<Action<IAppContext>> appTaskResolver)
         {
             //_logger.LogTrace($"{this} - UseAppTask.");
 
-            if (!IsCancellationRequested)
-                ServiceAppTaskResolvers.Add(appTaskResolver);
+            if (IsCancellationRequested)
+                return this;
+
+           ServiceAppTaskResolvers.Add(appTaskResolver);
 
             return this;
         }
 
-        public IAppTaskCollection UseAppTask<TAppTask>() where TAppTask : IAppTask
+        public IAppTaskCollection UseAppTask(Action<IAppContext> appTaskAction)
         {
-            //_logger.LogTrace($"{this} - UseAppTask<>.");
+            //_logger.LogTrace($"{this} - UseAppTask.");
 
-            var resolver = new Func<Action<IAppContext>>(() => 
+            if (IsCancellationRequested)
+                return this;
+
+            ServiceAppTaskResolvers.Add(() =>
             {
                 if (IsCancellationRequested)
                     return (ctx) => { };
 
-                var serviceTask = _serviceScope.ServiceProvider.GetRequiredService<TAppTask>();
-                return serviceTask.Execute;
+                return appTaskAction;
             });
 
-            return UseAppTask(resolver);
+            return this;
         }
 
-        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
+        public IAppTaskCollection UseAppTask<TAppTask>() where TAppTask : class, IAppTask
+        {
+            //_logger.LogTrace($"{this} - UseAppTask<>.");
+
+            RegisterTypeIfNot<TAppTask>();
+
+            return UseAppTask((ctx) => _serviceScope.ServiceProvider.GetRequiredService<TAppTask>().Execute(ctx));
+        }
+
+        public IAppTaskCollection<TResult> UseAppTask<TFlowTask, TResult>() where TFlowTask : class, IAppTask<IAppContext, TResult>
+        {
+            var appTaskCollection = new AppTaskCollection<TResult>(this);
+
+            RegisterTypeIfNot<TFlowTask>();
+
+            Action<IAppContext> resolver = (ctx) =>
+            {
+                if (IsCancellationRequested)
+                    return;
+
+                var serviceTask = _serviceScope.ServiceProvider.GetRequiredService<TFlowTask>();
+                var rezult = serviceTask.Execute(ctx);
+
+                appTaskCollection.Run(rezult);
+            };
+
+            UseAppTask(resolver);
+
+            return appTaskCollection;
+        }
+
+        #endregion
+
+        #region IAppTaskCollection - UseIfBranch
+
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = true)
         {
             return UseIfElseBranch(predicate, branchFlow.ToConfigurableAction(), null, createNestedScope);
         }
 
-        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope = false)
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> ifBranchFlow, Action<IAppTaskCollection> elseBranchFlow, bool createNestedScope = true)
         {
             return UseIfElseBranch(predicate, ifBranchFlow.ToConfigurableAction(), elseBranchFlow.ToConfigurableAction(), createNestedScope);
         }
 
-        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = false)
-        {
-            var resolver = new Func<Action<IAppContext>>(() =>
-            {
-                return (ctx) =>
-                {
-                    while (!IsCancellationRequested && predicate(ctx))
-                    {
-                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow.ToConfigurableAction(), createNestedScope))
-                        {
-                            serviceTaskCollection.Run(ctx);
-                        }
-                    }
-                };
-            });
-
-            return UseAppTask(resolver);
-        }
-
-        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = false)
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = true)
         {
             return UseIfElseBranch(predicate, branchFlow, null, createNestedScope);
         }
 
-        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, Action<IConfiguration, IAppTaskCollection> elseBranchFlow, bool createNestedScope = false)
+        public IAppTaskCollection UseIfBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, Action<IConfiguration, IAppTaskCollection> elseBranchFlow, bool createNestedScope = true)
         {
             return UseIfElseBranch(predicate, ifBranchFlow, elseBranchFlow, createNestedScope);
         }
 
-        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = false)
+        #endregion
+
+        #region IAppTaskCollection - UseWhileBranch
+
+        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IAppTaskCollection> branchFlow, bool createNestedScope = true)
         {
-            var resolver = new Func<Action<IAppContext>>(() =>
+            Action<IAppContext> resolver = (ctx) =>
             {
-                return (ctx) =>
+                while (!IsCancellationRequested && predicate(ctx))
                 {
-                    while (!IsCancellationRequested && predicate(ctx))
+                    using (var serviceTaskCollection = CreateNested(this, branchFlow.ToConfigurableAction(), createNestedScope))
                     {
-                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, branchFlow, createNestedScope))
-                        {
-                            serviceTaskCollection.Run(ctx);
-                        }
+                        serviceTaskCollection.Run(ctx);
                     }
-                };
-            });
+                }
+            };
+
+            return UseAppTask(resolver);
+        }
+
+        public IAppTaskCollection UseWhileBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> branchFlow, bool createNestedScope = true)
+        {
+            Action<IAppContext> resolver =  (ctx) =>
+            {
+                while (!IsCancellationRequested && predicate(ctx))
+                {
+                    using (var serviceTaskCollection = CreateNested(this, branchFlow, createNestedScope))
+                    {
+                        serviceTaskCollection.Run(ctx);
+                    }
+                }
+            };
 
             return UseAppTask(resolver);
         }
@@ -182,33 +252,150 @@ namespace ArtMind.AppFlow
 
         private IAppTaskCollection UseIfElseBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppTaskCollection> ifBranchFlow, Action<IConfiguration, IAppTaskCollection> elseBranchFlow, bool createNestedScope)
         {
-            var resolver = new Func<Action<IAppContext>>(() =>
+            Action<IAppContext> resolver = (ctx) =>
             {
-                return (ctx) =>
+                if (!IsCancellationRequested && predicate(ctx))
                 {
-                    if (!IsCancellationRequested && predicate(ctx))
+                    using (var serviceTaskCollection = CreateNested(this, ifBranchFlow, createNestedScope))
                     {
-                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, ifBranchFlow, createNestedScope))
-                        {
-                            serviceTaskCollection.Run(ctx);
-                        }
+                        serviceTaskCollection.Run(ctx);
                     }
-                    else if (elseBranchFlow != null)
+                }
+                else if (elseBranchFlow != null)
+                {
+                    using (var serviceTaskCollection = CreateNested(this, elseBranchFlow, createNestedScope))
                     {
-                        using (var serviceTaskCollection = new AppTaskCollection(_serviceScope, _stoppingToken, elseBranchFlow, createNestedScope))
-                        {
-                            serviceTaskCollection.Run(ctx);
-                        }
+                        serviceTaskCollection.Run(ctx);
                     }
-                };
-            });
+                }
+            };
 
             return UseAppTask(resolver);
+        }
+
+        internal T GetRequiredService<T>()
+        {
+            return _serviceScope.ServiceProvider.GetRequiredService<T>();
+        }
+
+        internal void RegisterTypeIfNot<T>() where T : class
+        {
+            if (_service != null && !_service.Any(x => x.ServiceType == typeof(T)))
+            {
+                _hasNewServiceCollectionItems = true;
+                _service.AddTransient<T>();
+            }
         }
 
         public override string ToString()
         {
             return $"{this.GetType().Name}: {_instanceKey} [{ServiceAppTaskResolvers.Count}]";
+        }
+
+        #endregion
+    }
+
+    internal class AppTaskCollection<T> : IAppTaskCollection<T>, IAsyncDisposable, IDisposable
+    {
+        private readonly string _instanceKey = Guid.NewGuid().ToString("N");
+        private readonly AppTaskCollection _rootTaskCollection;
+        private bool _disposed;
+        private Action<T> _action;
+
+        public bool IsCancellationRequested => _rootTaskCollection.IsCancellationRequested;
+
+        #region Ctor & Builders & Destroyers
+
+        internal AppTaskCollection(AppTaskCollection rootTaskCollection)
+        {
+            _rootTaskCollection = rootTaskCollection;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsyncCore();
+
+            Dispose(false);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsyncCore()
+        {
+            // Cascade async dispose calls
+            if (_action != null)
+            {
+                await Task.Run(() => Dispose(true));
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+                //_logger.LogTrace($"{this} - Disposing ...");
+
+                _action = null;
+
+                //_logger.LogTrace($"{this} - Disposed.");});
+            }
+
+            _disposed = true;
+        }
+
+        #endregion
+
+        public void Run(T input)
+        {
+            _action?.Invoke(input);
+        }
+
+        #region IAppTaskCollection<T> - UseAppTask
+
+        public IAppTaskCollection<TResult> UseAppTask<TFlowTask, TResult>() where TFlowTask : class, IAppTask<T, TResult>
+        {
+            var next = new AppTaskCollection<TResult>(_rootTaskCollection);
+
+            _rootTaskCollection.RegisterTypeIfNot<TFlowTask>();
+
+            _action = new Action<T>((input) =>
+            {
+                if (IsCancellationRequested)
+                    return;
+
+                var serviceTask = _rootTaskCollection.GetRequiredService<TFlowTask>();
+                var rezult = serviceTask.Execute(input);
+
+                next.Run(rezult);
+            });
+
+            return next;
+        }
+
+        public IAppTaskCollection UseAppTask<TFlowTask>() where TFlowTask : class, IAppTask<T>
+        {
+            _rootTaskCollection.RegisterTypeIfNot<TFlowTask>();
+
+            _action = new Action<T>((input) =>
+            {
+                if (IsCancellationRequested)
+                    return;
+
+                var serviceTask = _rootTaskCollection.GetRequiredService<TFlowTask>();
+                serviceTask.Execute(input);
+
+                return;
+            });
+
+            return _rootTaskCollection;
         }
 
         #endregion

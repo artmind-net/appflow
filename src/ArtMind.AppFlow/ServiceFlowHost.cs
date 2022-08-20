@@ -16,6 +16,7 @@ namespace ArtMind.AppFlow
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         private readonly IHostApplicationLifetime _appLifetime;
+        private readonly IServiceCollection _services;
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger<AppFlowHost> _logger;
         private readonly IAppContext _appFlowContext;
@@ -24,11 +25,13 @@ namespace ArtMind.AppFlow
 
         public ServiceFlowHost(
             IHostApplicationLifetime appLifetime,
+            IServiceCollection services,
             IServiceProvider serviceProvider,
             Func<IConfiguration, ServiceOptions> optionsDelegate,
             Action<IConfiguration, IAppTaskCollection> configureDelegate)
         {
             _appLifetime = appLifetime;
+            _services = services;
             _serviceProvider = serviceProvider;
             _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
             _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
@@ -40,7 +43,7 @@ namespace ArtMind.AppFlow
         {
             try
             {
-                await ExecuteFlow(stoppingToken);
+                await ExecuteFlowAsync(stoppingToken);
 
                 // see if the user pressed Ctrl+C
                 stoppingToken.ThrowIfCancellationRequested();
@@ -52,6 +55,9 @@ namespace ArtMind.AppFlow
             }
             catch (Exception ex)
             {
+                if (ex.InnerException != null)
+                    ex = ex.InnerException;
+
                 _logger.LogError(ex, $"{this} - service flow failed.");
                 Environment.ExitCode = 1;
             }
@@ -59,12 +65,10 @@ namespace ArtMind.AppFlow
             {
                 // No matter what happens (success or exception), we need to indicate that it's time to stop the application.
                 _appLifetime.StopApplication();
-            }
-
-            await Task.Run(() => { }, stoppingToken);
+            }            
         }
 
-        private async Task ExecuteFlow(CancellationToken stoppingToken)
+        private async Task ExecuteFlowAsync(CancellationToken stoppingToken)
         {
             if (_options.ShouldPostpone(out var postpone))
             {
@@ -91,8 +95,7 @@ namespace ArtMind.AppFlow
 
                 _logger.LogTrace($"{this} - running service flow cycle: {_cycleCounter}");
 
-                using (var serviceTaskCollection =
-                    AppTaskCollection.CreateRoot(_serviceProvider, stoppingToken, _configureDelegate))
+                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(stoppingToken, _configureDelegate, _services, _serviceProvider))
                 {
                     try
                     {

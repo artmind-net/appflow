@@ -1,21 +1,21 @@
-﻿using ArtMind.AppFlow.UseCase.Service.Abstractions;
+﻿using ArtMind.AppFlow.Tasks;
+using ArtMind.AppFlow.UseCase.Service.Abstractions;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using ArtMind.AppFlow.Tasks;
+using System;
 
 namespace ArtMind.AppFlow.UseCase.Service.Workers
 {
-    public class FinishWorker : TraceTask
+    public class TraceWorkerWithError : TraceTask
     {
-        private readonly ILogger<FinishWorker> _logger;
+        private readonly ILogger<TraceWorkerWithError> _logger;
         private readonly ISingletonDependency _singletonDependency;
         private readonly IScopedDependency _scopedDependency;
         private readonly ITransientDependency _transientDependency;
 
-        public FinishWorker(ILogger<FinishWorker> logger,
+        public TraceWorkerWithError(ILogger<TraceWorkerWithError> logger,
             ISingletonDependency singletonDependency,
             IScopedDependency scopedDependency,
-            ITransientDependency transientDependency) : base(logger)
+            ITransientDependency transientDependency) :base(logger)
         {
             _logger = logger;
             _singletonDependency = singletonDependency;
@@ -25,10 +25,13 @@ namespace ArtMind.AppFlow.UseCase.Service.Workers
 
         protected override void Execute(IAppContext context)
         {
-           // _logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
-            //throw new Exception("The ex ...");
-            _logger.LogInformation("By by i was the last worker in the flow.");
-            Task.Delay(1000);
+            //_logger.LogInformation(this, context, _singletonDependency, _scopedDependency, _transientDependency);
+            throw new Exception("The exception ...");
         }
+
+        //protected override void ExecuteCatch(IAppContext context)
+        //{
+        //    _logger.LogInformation($"{this} Exception was handled");
+        //}
     }
 }

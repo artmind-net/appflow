@@ -1,0 +1,5 @@
+vegetables tomatoes 3
+vegetables potatoes 5
+fruits apples 3
+fruits peaches 10
+vegetables carrots 3

@@ -45,8 +45,8 @@ namespace ArtMind.AppFlow.UseCase.Service
                 services.AddTransient<InitCounterWorker>();
                 services.AddTransient<IfWorker>();
                 services.AddTransient<WhileWorker>();
-                services.AddTransient<ErrorWorker>();
-                services.AddTransient<FinishWorker>();
+                services.AddTransient<TraceWorkerWithError>();
+                services.AddTransient<TraceWorkerClosure>();
 
             }, (cfg, flow) => // // your application will behave as an OS Service
             {
@@ -68,10 +68,10 @@ namespace ArtMind.AppFlow.UseCase.Service
                 }, elseBranchFlow =>
                 {
                     elseBranchFlow
-                        .UseAppTask<ErrorWorker>();
+                        .UseAppTask<TraceWorkerWithError>();
                 }, true)
-                .UseAppTask<ErrorWorker>() // uncomment this line to throw an error.
-                .UseAppTask<FinishWorker>();
+                .UseAppTask<TraceWorkerWithError>() // uncomment this line to throw an error.
+                .UseAppTask<TraceWorkerClosure>();
             });
         // use dummy task
     }

@@ -19,6 +19,11 @@ namespace ArtMind.AppFlow
             return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureFlowDelegate);
         }
 
+        public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, Action<IConfiguration, IServiceCollection> configureServicesDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureServicesDelegate, configureFlowDelegate);
+        }
+
         public static IHostBuilder RegisterServiceFlow(this IHostBuilder hostBuilder, ServiceOptions options, Action<IAppTaskCollection> configureFlowDelegate)
         {
             return hostBuilder.RegisterServiceFlow(options.ToOptionsFunc(), configureFlowDelegate.ToConfigurableAction());
@@ -46,6 +51,7 @@ namespace ArtMind.AppFlow
                 services.AddSingleton<IAppContext, AppContext>();
                 services.AddSingleton(configureFlowDelegate);
                 services.AddSingleton(optionsDelegate);
+                services.AddSingleton(services);
                 services.AddTransient<ServiceFlowHost>();
                 
                 configureServicesDelegate?.Invoke(hostContext.Configuration, services);
@@ -70,6 +76,11 @@ namespace ArtMind.AppFlow
             return hostBuilder.RegisterAppFlow(AppOptions.Default, configureFlowDelegate);
         }
 
+        public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, Action<IConfiguration, IServiceCollection> configureServicesDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterAppFlow(AppOptions.Default.ToOptionsFunc(), configureServicesDelegate, configureFlowDelegate);
+        }
+
         public static IHostBuilder RegisterAppFlow(this IHostBuilder hostBuilder, AppOptions options, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
         {
             return hostBuilder.RegisterAppFlow(options.ToOptionsFunc(), configureFlowDelegate);
@@ -92,6 +103,7 @@ namespace ArtMind.AppFlow
                 services.AddSingleton<IAppContext, AppContext>();
                 services.AddSingleton(configureFlowDelegate);
                 services.AddSingleton(optionsDelegate);
+                services.AddSingleton(services);
                 services.AddTransient<AppFlowHost>();
 
                 configureServicesDelegate?.Invoke(hostContext.Configuration, services);
