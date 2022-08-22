@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -110,6 +111,60 @@ namespace ArtMind.AppFlow
 
                 services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<AppFlowHost>());
             });
+
+            return hostBuilder;
+        }
+
+        #endregion
+
+        #region WebApplication
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, Action<IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureFlowDelegate.ToConfigurableAction());
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureFlowDelegate);
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, Action<IConfiguration, IServiceCollection> configureServicesDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(ServiceOptions.Default.ToOptionsFunc(), configureServicesDelegate, configureFlowDelegate);
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, ServiceOptions options, Action<IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(options.ToOptionsFunc(), configureFlowDelegate.ToConfigurableAction());
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, ServiceOptions options, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(options.ToOptionsFunc(), configureFlowDelegate);
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, Func<IConfiguration, ServiceOptions> optionsDelegate, Action<IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(optionsDelegate, configureFlowDelegate.ToConfigurableAction());
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, Func<IConfiguration, ServiceOptions> optionsDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            return hostBuilder.RegisterServiceFlow(optionsDelegate, null, configureFlowDelegate);
+        }
+
+        public static WebApplicationBuilder RegisterServiceFlow(this WebApplicationBuilder hostBuilder, Func<IConfiguration, ServiceOptions> optionsDelegate, Action<IConfiguration, IServiceCollection> configureServicesDelegate, Action<IConfiguration, IAppTaskCollection> configureFlowDelegate)
+        {
+            hostBuilder.Services.AddSingleton<IAppContext, AppContext>();
+            hostBuilder.Services.AddSingleton(configureFlowDelegate);
+            hostBuilder.Services.AddSingleton(optionsDelegate);
+            hostBuilder.Services.AddSingleton(hostBuilder.Services);
+            hostBuilder.Services.AddTransient<ServiceFlowHost>();
+
+            configureServicesDelegate?.Invoke(hostBuilder.Configuration, hostBuilder.Services);
+
+            hostBuilder.Services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<ServiceFlowHost>());
 
             return hostBuilder;
         }
