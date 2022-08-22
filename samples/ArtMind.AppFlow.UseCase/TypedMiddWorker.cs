@@ -1,8 +1,8 @@
 ﻿using ArtMind.AppFlow.Tasks;
 
-namespace ArtMind.AppFlow.UseCase.DummyService.Workers
+namespace ArtMind.AppFlow.UseCase
 {
-    internal class WorkerMidd : FlowTask<int, string>
+    public class TypedMiddWorker : FlowTask<int, string>
     {
         public override string Execute(int input)
         {

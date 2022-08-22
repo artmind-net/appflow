@@ -1,8 +1,8 @@
 ﻿using ArtMind.AppFlow.Tasks;
 
-namespace ArtMind.AppFlow.UseCase.DummyService.Workers
+namespace ArtMind.AppFlow.UseCase
 {
-    public class WorkerStart : FlowTaskStart<int>
+    public class TypedStartWorker : FlowTaskStart<int>
     {
         public override int Execute(IAppContext context)
         {
