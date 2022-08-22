@@ -4,16 +4,16 @@ using System.Threading.Tasks;
 
 namespace ArtMind.AppFlow
 {
-    internal static class AppTaskCollectionEngine
+    internal static class AppFlowEngine
     {
-        internal static void Run(this AppTaskCollection appTaskCollection, IAppContext context)
+        internal static void Run(this AppFlowBuilder appFlowBuilder, IAppContext context)
         {
-            if (appTaskCollection.IsCancellationRequested)
+            if (appFlowBuilder.IsCancellationRequested)
                 return;
 
-            foreach (var taskResolver in appTaskCollection.ServiceAppTaskResolvers)
+            foreach (var taskResolver in appFlowBuilder.ServiceAppTaskResolvers)
             {
-                if (appTaskCollection.IsCancellationRequested)
+                if (appFlowBuilder.IsCancellationRequested)
                     break;
                 
                 try
@@ -31,14 +31,14 @@ namespace ArtMind.AppFlow
             }
         }
 
-        internal static async Task RunAsync(this AppTaskCollection serviceTaskCollection, IAppContext context, CancellationToken stoppingToke)
+        internal static async Task RunAsync(this AppFlowBuilder appFlowBuilder, IAppContext context, CancellationToken stoppingToke)
         {
-            if (serviceTaskCollection.IsCancellationRequested)
+            if (appFlowBuilder.IsCancellationRequested)
                 return;
 
-            foreach (var taskResolver in serviceTaskCollection.ServiceAppTaskResolvers)
+            foreach (var taskResolver in appFlowBuilder.ServiceAppTaskResolvers)
             {
-                if (serviceTaskCollection.IsCancellationRequested)
+                if (appFlowBuilder.IsCancellationRequested)
                     break;
 
                 await Task.Run(() =>

@@ -3,7 +3,7 @@ using ArtMind.AppFlow.UseCase;
 
 await Host
     .CreateDefaultBuilder(args)
-    .RegisterAppFlow(flow =>
+    .RegisterServiceFlow(flow =>
      {
          flow
          .UseAppTask<TypedStartWorker, int>()

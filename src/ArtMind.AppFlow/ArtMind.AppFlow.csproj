@@ -50,4 +50,8 @@
     <ProjectReference Include="..\ArtMind.AppFlow.Abstractions\ArtMind.AppFlow.Abstractions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\" />
+  </ItemGroup>
+
 </Project>

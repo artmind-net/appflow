@@ -2,32 +2,32 @@
 
 namespace ArtMind.AppFlow
 {
-    public class AppOptions
+    public class ConsoleAppOptions
     {
         private readonly TimeSpan _postponeInterval;
         private readonly DateTime? _scheduleAt;
 
-        private AppOptions(TimeSpan postpone, DateTime? schedule)
+        private ConsoleAppOptions(TimeSpan postpone, DateTime? schedule)
         {
             _postponeInterval = postpone;
             _scheduleAt = schedule;
         }
 
-        internal static AppOptions Default => new AppOptions(TimeSpan.Zero, null);
+        internal static ConsoleAppOptions Default => new ConsoleAppOptions(TimeSpan.Zero, null);
 
         /// <summary>
         /// Postpone application start.
         /// </summary>
         /// <param name="postponeInterval">Flow will start after the postpone interval elapses, Default = TimeSpan.Zero, means no delay.</param>
         /// <returns></returns>
-        public static AppOptions Postpone(TimeSpan postponeInterval) => new AppOptions(postponeInterval, null);
+        public static ConsoleAppOptions Postpone(TimeSpan postponeInterval) => new ConsoleAppOptions(postponeInterval, null);
 
         /// <summary>
         /// Schedule application start.
         /// </summary>
         /// <param name="scheduleAt">UTC time when to schedule application to start</param>
         /// <returns></returns>
-        public static AppOptions Schedule(DateTime scheduleAt) => new AppOptions(TimeSpan.Zero, scheduleAt);
+        public static ConsoleAppOptions Schedule(DateTime scheduleAt) => new ConsoleAppOptions(TimeSpan.Zero, scheduleAt);
 
         #region Internal helpers
 

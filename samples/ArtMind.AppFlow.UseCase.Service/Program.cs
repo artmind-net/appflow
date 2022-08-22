@@ -30,7 +30,7 @@ namespace ArtMind.AppFlow.UseCase.Service
                     .GetSection("AppSettings")
                     .Get<AppSettings>();
 
-                return ServiceOptions.Options(4, TimeSpan.FromSeconds(3), DateTime.UtcNow.AddSeconds(2));
+                return ServiceAppOptions.Options(4, TimeSpan.FromSeconds(3), DateTime.UtcNow.AddSeconds(2));
             }, (cfg, services) =>
             {
                 AppSettings appSettings = cfg
