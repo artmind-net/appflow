@@ -20,9 +20,9 @@
     <NeutralLanguage>en</NeutralLanguage>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>6.0.0.1</AssemblyVersion>
-    <FileVersion>6.0.0.1</FileVersion>
-    <Version>6.0.0.1</Version>
+    <AssemblyVersion>6.0.1</AssemblyVersion>
+    <FileVersion>6.0.1</FileVersion>
+    <Version>6.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
