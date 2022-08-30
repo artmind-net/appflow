@@ -246,7 +246,7 @@ namespace ArtMind.AppFlow
                         serviceTaskCollection.Run(ctx);
                     }
                 }
-                else if (elseBranchFlow != null)
+                else if (!IsCancellationRequested && elseBranchFlow != null)
                 {
                     using (var serviceTaskCollection = CreateNested(this, elseBranchFlow, createNestedScope))
                     {
@@ -333,10 +333,13 @@ namespace ArtMind.AppFlow
             private IAppFlowBuilder UseIfElseBranch(Predicate<IAppContext> predicate, Action<IConfiguration, IAppFlowBuilder> ifBranchFlow, Action<IConfiguration, IAppFlowBuilder> elseBranchFlow, bool createNestedScope)
             {
                 var ifBranch = new AppFlowBuilderAbstract(ifBranchFlow, this._configuration);
-                var elseBranch = new AppFlowBuilderAbstract(elseBranchFlow, this._configuration);
-
                 WorkerTypes.AddRange(ifBranch.WorkerTypes);
-                WorkerTypes.AddRange(elseBranch.WorkerTypes);
+
+                if (elseBranchFlow != null)
+                {
+                    var elseBranch = new AppFlowBuilderAbstract(elseBranchFlow, this._configuration);
+                    WorkerTypes.AddRange(elseBranch.WorkerTypes);
+                }
 
                 return this;
             }

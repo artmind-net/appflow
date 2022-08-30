@@ -70,8 +70,16 @@ namespace ArtMind.AppFlow.UseCase.Service
                     elseBranchFlow
                         .UseAppTask<TraceWorkerWithError>();
                 }, true)
-                .UseAppTask<TraceWorkerWithError>() // uncomment this line to throw an error.
-                .UseAppTask<TraceWorkerClosure>();
+                .UseIfBranch(ctx => ctx.HasCounter(), branchFlow =>
+                {
+                    branchFlow
+                    .UseAppTask<IfWorker>()
+                    .UseAppTask<IfWorker>()
+                    .UseWhileBranch(ctx => ctx.GetCounter() < 5, branchFlow =>
+                    {
+                        branchFlow.UseAppTask<WhileWorker>();
+                    });
+                }, true);
             });
         // use dummy task
     }
