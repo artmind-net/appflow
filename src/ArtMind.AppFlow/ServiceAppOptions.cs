@@ -2,41 +2,41 @@
 
 namespace ArtMind.AppFlow
 {
-    public class ServiceOptions
+    public class ServiceAppOptions
     {
         private readonly ulong _occurrenceLimit;
         private readonly TimeSpan _recurrenceInterval;
         private readonly DateTime? _scheduleAt;
 
-        private ServiceOptions(ulong occurrenceLimit, TimeSpan recurrenceInterval, DateTime? scheduleAt = null)
+        private ServiceAppOptions(ulong occurrenceLimit, TimeSpan recurrenceInterval, DateTime? scheduleAt = null)
         {
             _occurrenceLimit = occurrenceLimit;
             _recurrenceInterval = recurrenceInterval;
             _scheduleAt = scheduleAt;
         }
 
-        internal static  ServiceOptions Default => new ServiceOptions(0, TimeSpan.Zero);
+        internal static  ServiceAppOptions Default => new ServiceAppOptions(0, TimeSpan.Zero);
 
         /// <summary>
         /// Setting service occurrence limit.
         /// </summary>
         /// <param name="occurrenceLimit">The number of service flow cycles to be executed</param>
         /// <returns></returns>
-        public static ServiceOptions Occurrence(ulong occurrenceLimit) => new ServiceOptions(occurrenceLimit, TimeSpan.Zero);
+        public static ServiceAppOptions Occurrence(ulong occurrenceLimit) => new ServiceAppOptions(occurrenceLimit, TimeSpan.Zero);
 
         /// <summary>
         /// Setting service cycle recurrence interval.
         /// </summary>
         /// <param name="recurrenceInterval">The minimum time interval duration of a service flow cycle, until to start next session</param>
         /// <returns></returns>
-        public static ServiceOptions Recurrence(TimeSpan recurrenceInterval) => new ServiceOptions(0, recurrenceInterval);
+        public static ServiceAppOptions Recurrence(TimeSpan recurrenceInterval) => new ServiceAppOptions(0, recurrenceInterval);
 
         /// <summary>
         /// Schedule service start.
         /// </summary>
         /// <param name="scheduleAt">UTC time when to schedule service to start</param>
         /// <returns></returns>
-        public static ServiceOptions Schedule(DateTime scheduleAt) => new ServiceOptions(0, TimeSpan.Zero, scheduleAt);
+        public static ServiceAppOptions Schedule(DateTime scheduleAt) => new ServiceAppOptions(0, TimeSpan.Zero, scheduleAt);
 
         /// <summary>
         /// Setting service occurrence limit and cycle recurrence interval.
@@ -45,7 +45,7 @@ namespace ArtMind.AppFlow
         /// <param name="recurrenceInterval">The minimum time interval duration of a service flow cycle, until to start next session</param>
         /// <param name="scheduleAt">UTC time when to schedule service to start</param>
         /// <returns></returns>
-        public static ServiceOptions Options(ulong occurrenceLimit, TimeSpan recurrenceInterval, DateTime scheduleAt) => new ServiceOptions(occurrenceLimit, recurrenceInterval, scheduleAt);
+        public static ServiceAppOptions Options(ulong occurrenceLimit, TimeSpan recurrenceInterval, DateTime scheduleAt) => new ServiceAppOptions(occurrenceLimit, recurrenceInterval, scheduleAt);
 
         #region Internal helpers
 

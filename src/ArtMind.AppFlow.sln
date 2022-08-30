@@ -33,15 +33,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.Abstraction
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "consoles", "consoles", "{F4645D89-F3FB-4289-8F05-06A496066A8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.TextToSpeach", "..\samples\ArtMind.AppFlow.UseCase.TextToSpeach\ArtMind.AppFlow.UseCase.TextToSpeach.csproj", "{03F194A1-B3B7-49CF-882A-8D02B36F276A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.UseCase.TextToSpeach", "..\samples\ArtMind.AppFlow.UseCase.TextToSpeach\ArtMind.AppFlow.UseCase.TextToSpeach.csproj", "{03F194A1-B3B7-49CF-882A-8D02B36F276A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.DummyConsole", "..\samples\ArtMind.AppFlow.UseCase.DummyConsole\ArtMind.AppFlow.UseCase.DummyConsole.csproj", "{EB768714-A275-49FD-993D-9A066327F692}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.UseCase.DummyConsole", "..\samples\ArtMind.AppFlow.UseCase.DummyConsole\ArtMind.AppFlow.UseCase.DummyConsole.csproj", "{EB768714-A275-49FD-993D-9A066327F692}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "services", "{71305277-442F-4083-81F3-75B9D896AD1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.DummyService", "..\samples\ArtMind.AppFlow.UseCase.DummyService\ArtMind.AppFlow.UseCase.DummyService.csproj", "{1B94B3A8-46D1-43A2-B243-AB6C974F77D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.UseCase.DummyService", "..\samples\ArtMind.AppFlow.UseCase.DummyService\ArtMind.AppFlow.UseCase.DummyService.csproj", "{1B94B3A8-46D1-43A2-B243-AB6C974F77D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.EtlService", "..\samples\ArtMind.AppFlow.UseCase.EtlService\ArtMind.AppFlow.UseCase.EtlService.csproj", "{2F81321C-CB93-4DD3-9307-446103081C53}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArtMind.AppFlow.UseCase.EtlService", "..\samples\ArtMind.AppFlow.UseCase.EtlService\ArtMind.AppFlow.UseCase.EtlService.csproj", "{2F81321C-CB93-4DD3-9307-446103081C53}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apis", "apis", "{43CFF2E2-8676-4C0E-B956-6FD159A57631}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase", "..\samples\ArtMind.AppFlow.UseCase\ArtMind.AppFlow.UseCase.csproj", "{ED39ACB8-59A8-46E6-AAC0-13D2B825C0DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.MinimalApi", "..\samples\ArtMind.AppFlow.UseCase.MinimalApi\ArtMind.AppFlow.UseCase.MinimalApi.csproj", "{61FCF5AB-C5CE-4DF1-BB9D-F4813CBDA764}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtMind.AppFlow.UseCase.WebApi", "..\samples\ArtMind.AppFlow.UseCase.WebApi\ArtMind.AppFlow.UseCase.WebApi.csproj", "{750E88DD-8C82-4AEA-BD24-66ABDE34D4B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +85,18 @@ Global
 		{2F81321C-CB93-4DD3-9307-446103081C53}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F81321C-CB93-4DD3-9307-446103081C53}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F81321C-CB93-4DD3-9307-446103081C53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED39ACB8-59A8-46E6-AAC0-13D2B825C0DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED39ACB8-59A8-46E6-AAC0-13D2B825C0DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED39ACB8-59A8-46E6-AAC0-13D2B825C0DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED39ACB8-59A8-46E6-AAC0-13D2B825C0DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61FCF5AB-C5CE-4DF1-BB9D-F4813CBDA764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61FCF5AB-C5CE-4DF1-BB9D-F4813CBDA764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61FCF5AB-C5CE-4DF1-BB9D-F4813CBDA764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61FCF5AB-C5CE-4DF1-BB9D-F4813CBDA764}.Release|Any CPU.Build.0 = Release|Any CPU
+		{750E88DD-8C82-4AEA-BD24-66ABDE34D4B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{750E88DD-8C82-4AEA-BD24-66ABDE34D4B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{750E88DD-8C82-4AEA-BD24-66ABDE34D4B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{750E88DD-8C82-4AEA-BD24-66ABDE34D4B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,6 +110,10 @@ Global
 		{71305277-442F-4083-81F3-75B9D896AD1A} = {77EF5696-9FC5-4D0A-B8F1-40FFE9D7659B}
 		{1B94B3A8-46D1-43A2-B243-AB6C974F77D0} = {71305277-442F-4083-81F3-75B9D896AD1A}
 		{2F81321C-CB93-4DD3-9307-446103081C53} = {71305277-442F-4083-81F3-75B9D896AD1A}
+		{43CFF2E2-8676-4C0E-B956-6FD159A57631} = {77EF5696-9FC5-4D0A-B8F1-40FFE9D7659B}
+		{ED39ACB8-59A8-46E6-AAC0-13D2B825C0DE} = {77EF5696-9FC5-4D0A-B8F1-40FFE9D7659B}
+		{61FCF5AB-C5CE-4DF1-BB9D-F4813CBDA764} = {43CFF2E2-8676-4C0E-B956-6FD159A57631}
+		{750E88DD-8C82-4AEA-BD24-66ABDE34D4B0} = {43CFF2E2-8676-4C0E-B956-6FD159A57631}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3D2C1899-DF0D-4BB5-BA79-4E77E5D62F64}

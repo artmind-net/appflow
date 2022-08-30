@@ -1,18 +1,14 @@
 ﻿using ArtMind.AppFlow;
-using ArtMind.AppFlow.Abstractions;
+using ArtMind.AppFlow.UseCase;
 using Microsoft.Extensions.Hosting;
-using System;
 
 Host
     .CreateDefaultBuilder()
-    .RegisterAppFlow((cfg, flow) =>
+    .RegisterConsoleFlow((cfg, flow) =>
     {
         flow
-        .UseAppTask(
-            (appContext) =>
-            Console.WriteLine("Hellow")
-        )
-        .UseAppTask((c) => Console.WriteLine("Hellow 2"));
+        .UseAppTask<HelloWorldWorker>()
+        .UseAppTask((c) => Console.WriteLine("I'm a console app inline task."));
     })
     .Build()
     .Run();

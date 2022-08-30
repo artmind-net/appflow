@@ -9,34 +9,32 @@ using System.Threading.Tasks;
 
 namespace ArtMind.AppFlow
 {
-    internal class ServiceFlowHost : BackgroundService
+    internal class ServiceAppHost : BackgroundService
     {
         private readonly string _instanceKey = Guid.NewGuid().ToString("N");
         private ulong _cycleCounter;
         private readonly Stopwatch _stopwatch = new Stopwatch();
 
         private readonly IHostApplicationLifetime _appLifetime;
-        private readonly IServiceCollection _services;
         private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<AppFlowHost> _logger;
+        private readonly ILogger<ConsoleAppHost> _logger;
         private readonly IAppContext _appFlowContext;
-        private readonly Action<IConfiguration, IAppTaskCollection> _configureDelegate;
-        private readonly ServiceOptions _options;
+        private readonly Action<IConfiguration, IAppFlowBuilder> _configureDelegate;        
+        private readonly ServiceAppOptions _options;
 
-        public ServiceFlowHost(
+        public ServiceAppHost(
             IHostApplicationLifetime appLifetime,
-            IServiceCollection services,
             IServiceProvider serviceProvider,
-            Func<IConfiguration, ServiceOptions> optionsDelegate,
-            Action<IConfiguration, IAppTaskCollection> configureDelegate)
+            Func<IConfiguration, ServiceAppOptions> optionsDelegate,
+            Action<IConfiguration, IAppFlowBuilder> configureDelegate)
         {
             _appLifetime = appLifetime;
-            _services = services;
-            _serviceProvider = serviceProvider;
-            _logger = _serviceProvider.GetRequiredService<ILogger<AppFlowHost>>();
-            _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
-            _options = optionsDelegate?.Invoke(serviceProvider.GetService<IConfiguration>()) ?? ServiceOptions.Default;
+            _serviceProvider = serviceProvider;            
             _configureDelegate = configureDelegate;
+            _options = optionsDelegate?.Invoke(serviceProvider.GetService<IConfiguration>()) ?? ServiceAppOptions.Default;
+
+            _logger = _serviceProvider.GetRequiredService<ILogger<ConsoleAppHost>>();
+            _appFlowContext = _serviceProvider.GetRequiredService<IAppContext>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -95,7 +93,7 @@ namespace ArtMind.AppFlow
 
                 _logger.LogTrace($"{this} - running service flow cycle: {_cycleCounter}");
 
-                using (var serviceTaskCollection = AppTaskCollection.CreateRoot(stoppingToken, _configureDelegate, _services, _serviceProvider))
+                using (var serviceTaskCollection = AppFlowBuilder.CreateRoot(stoppingToken, _configureDelegate, _serviceProvider))
                 {
                     try
                     {
