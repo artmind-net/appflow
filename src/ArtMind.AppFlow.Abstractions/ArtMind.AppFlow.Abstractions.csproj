@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	<TargetFramework>net8.0</TargetFramework>
+	<TargetFramework>net9.0</TargetFramework>
     <Company>ArtMind</Company>
     <Authors>Artiom Negara</Authors>
     <RepositoryUrl>https://github.com/artmind-net/app-flow</RepositoryUrl>
@@ -10,20 +10,20 @@
     <Title>ArtMind - App flow and Service flow framework</Title>
     <Summary>AppFlow - a flow orchestration framework for .NET applications</Summary>
     <PackageReleaseNotes>
-		Upgrading to target framework net8.0
+		Upgrading to target framework net9.0
 	</PackageReleaseNotes>
     <NeutralLanguage>en</NeutralLanguage>
     <PackageProjectUrl>https://www.artmind.ro/appflow/</PackageProjectUrl>
     <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
-    <Copyright>© 2020 ArtMind</Copyright>
+    <Copyright>© 2025 ArtMind</Copyright>
     <Description>Flow orchestration framework for .NET applications</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>app-flow service-flow orchestration-framework abstraction app service flow management fluent</PackageTags>
     <RootNamespace>ArtMind.AppFlow</RootNamespace>
-    <AssemblyVersion>8.0.0</AssemblyVersion>
-    <FileVersion>8.0.0</FileVersion>
-    <Version>8.0.0</Version>
+    <AssemblyVersion>9.0.0</AssemblyVersion>
+    <FileVersion>9.0.0</FileVersion>
+    <Version>9.0.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
   </ItemGroup>
 
 </Project>
